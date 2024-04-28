@@ -1,3 +1,4 @@
+package src;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -32,7 +33,6 @@ public class LoginGUI extends JFrame implements ActionListener {
         loginButton.setFocusPainted(false);
         loginButton.addActionListener(this);
 
-
         JPanel signupPanel = new JPanel(new GridBagLayout());
 
         JLabel label = new JLabel("Don't have an account already? ");
@@ -46,7 +46,9 @@ public class LoginGUI extends JFrame implements ActionListener {
         signupButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(LoginGUI.this, "Sign Up Button Clicked!");
+                LoginGUI.this.dispose();
+                new SignupGUI();
+                return;
             }
         });
 
@@ -73,7 +75,7 @@ public class LoginGUI extends JFrame implements ActionListener {
         getContentPane().add(panel);
 
         // Setting custom logo
-        ImageIcon icon = new ImageIcon("logo.png");
+        ImageIcon icon = new ImageIcon("images/logo.png");
         setIconImage(icon.getImage());
 
         setVisible(true);
@@ -83,10 +85,14 @@ public class LoginGUI extends JFrame implements ActionListener {
         String username = usernameField.getText();
         String password = new String(passwordField.getPassword());
 
-        if (username.equals("admin") && password.equals("admin")) {
-            JOptionPane.showMessageDialog(this, "Login Successful!");
-        } else {
-            JOptionPane.showMessageDialog(this, "Invalid username or password. Please try again.");
+        User user = Database.getUser(username, password);
+        if (user == null) {
+            JOptionPane.showMessageDialog(this, "Invalid Credentials!");
+            usernameField.setText("");
+            passwordField.setText("");
+            return;
         }
+
+        JOptionPane.showMessageDialog(this, "Login Successful!");
     }
 }
