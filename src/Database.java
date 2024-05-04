@@ -1,4 +1,5 @@
 package src;
+
 import java.sql.*;
 
 public class Database {
@@ -17,21 +18,20 @@ public class Database {
 
     private static void createUserTable() {
         String sql = "CREATE TABLE IF NOT EXISTS user ("
-                   + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
-                   + "username TEXT NOT NULL,"
-                   + "password TEXT NOT NULL,"
-                   + "type TEXT NOT NULL,"
-                   + "first_name TEXT NOT NULL,"
-                   + "last_name TEXT NOT NULL,"
-                   + "email TEXT NOT NULL)";
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "username TEXT NOT NULL,"
+                + "password TEXT NOT NULL,"
+                + "type TEXT NOT NULL,"
+                + "first_name TEXT NOT NULL,"
+                + "last_name TEXT NOT NULL,"
+                + "email TEXT NOT NULL)";
         connect(sql);
     }
 
     private static void connect(String sql) {
         try (
-            Connection connection = DriverManager.getConnection(url);
-            Statement statement = connection.createStatement();
-        ) {
+                Connection connection = DriverManager.getConnection(url);
+                Statement statement = connection.createStatement();) {
             statement.execute(sql);
             System.out.println("Table created successfully!");
         } catch (SQLException e) {
@@ -39,22 +39,23 @@ public class Database {
         }
     }
 
-    public static boolean adduser(String username, String password, String type, String firstName, String lastName, String email) {
-        if (userExists(username)) return false;
+    public static boolean adduser(String username, String password, String type, String firstName, String lastName,
+            String email) {
+        if (userExists(username))
+            return false;
 
         String sql = "INSERT INTO user (username, password, type, first_name, last_name, email) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (
-            Connection connection = DriverManager.getConnection(url);
-            PreparedStatement statement = connection.prepareStatement(sql);
-        ) {
-            statement.setString(1, username); 
+                Connection connection = DriverManager.getConnection(url);
+                PreparedStatement statement = connection.prepareStatement(sql);) {
+            statement.setString(1, username);
             statement.setString(2, password);
-            statement.setString(3, type); 
+            statement.setString(3, type);
             statement.setString(4, firstName);
-            statement.setString(5, lastName); 
+            statement.setString(5, lastName);
             statement.setString(6, email);
-            
+
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
                 System.out.println("Data inserted successfully!");
@@ -70,12 +71,11 @@ public class Database {
         String sql = "SELECT * FROM user WHERE username = ? AND password = ?";
 
         try (
-            Connection connection = DriverManager.getConnection(url);
-            PreparedStatement statement = connection.prepareStatement(sql);
-        ) {
+                Connection connection = DriverManager.getConnection(url);
+                PreparedStatement statement = connection.prepareStatement(sql);) {
             statement.setString(1, username);
             statement.setString(2, password);
-            
+
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     String type = resultSet.getString("type");
@@ -96,11 +96,10 @@ public class Database {
         String sql = "SELECT * FROM user WHERE LOWER(username) = LOWER(?)";
 
         try (
-            Connection connection = DriverManager.getConnection(url);
-            PreparedStatement statement = connection.prepareStatement(sql);
-        ) {
+                Connection connection = DriverManager.getConnection(url);
+                PreparedStatement statement = connection.prepareStatement(sql);) {
             statement.setString(1, username);
-            
+
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
                     return true;
