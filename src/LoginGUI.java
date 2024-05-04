@@ -1,4 +1,5 @@
 package src;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -58,18 +59,18 @@ public class LoginGUI extends JFrame implements ActionListener {
         JSeparator separator = new JSeparator();
         separator.setMaximumSize(new Dimension(Integer.MAX_VALUE, 20));
         separator.setForeground(Color.GRAY);
-        
+
         panel.add(titleLabel);
-        panel.add(new JLabel()); 
+        panel.add(new JLabel());
         panel.add(usernameLabel);
         panel.add(usernameField);
         panel.add(passwordLabel);
         panel.add(passwordField);
-        panel.add(new JLabel()); 
+        panel.add(new JLabel());
         panel.add(loginButton);
-        panel.add(new JLabel()); 
+        panel.add(new JLabel());
         panel.add(separator);
-        panel.add(signupPanel, BorderLayout.CENTER); 
+        panel.add(signupPanel, BorderLayout.CENTER);
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         getContentPane().add(panel);

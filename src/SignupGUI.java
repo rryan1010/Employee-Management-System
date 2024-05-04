@@ -1,4 +1,5 @@
 package src;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -10,8 +11,10 @@ public class SignupGUI extends JFrame implements ActionListener {
     private JComboBox<String> comboBox;
     private JTextField firstNameField;
     private JTextField lastNameField;
-    private JTextField emailField;
     private JButton signupButton;
+    private JTextField departmentField;
+    private JTextField jobTitleField;
+    private JTextField emailField;
 
     public SignupGUI() {
         setTitle("User Signup");
@@ -36,7 +39,7 @@ public class SignupGUI extends JFrame implements ActionListener {
         confirmPasswordField = new JPasswordField();
 
         JLabel userTypeLabel = new JLabel("Type");
-        String[] options = {"Employee", "HR"};
+        String[] options = { "Employee", "HR" };
         comboBox = new JComboBox<>(options);
         comboBox.setSelectedIndex(0);
 
@@ -80,9 +83,9 @@ public class SignupGUI extends JFrame implements ActionListener {
         JSeparator separator = new JSeparator();
         separator.setMaximumSize(new Dimension(Integer.MAX_VALUE, 20));
         separator.setForeground(Color.GRAY);
-        
+
         panel.add(titleLabel);
-        panel.add(new JLabel()); 
+        panel.add(new JLabel());
         panel.add(usernameLabel);
         panel.add(usernameField);
         panel.add(passwordLabel);
@@ -97,11 +100,11 @@ public class SignupGUI extends JFrame implements ActionListener {
         panel.add(lastNameField);
         panel.add(emailLabel);
         panel.add(emailField);
-        panel.add(new JLabel()); 
+        panel.add(new JLabel());
         panel.add(signupButton);
-        panel.add(new JLabel()); 
+        panel.add(new JLabel());
         panel.add(separator);
-        panel.add(loginPanel, BorderLayout.CENTER); 
+        panel.add(loginPanel, BorderLayout.CENTER);
         panel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         getContentPane().add(panel);
@@ -120,9 +123,12 @@ public class SignupGUI extends JFrame implements ActionListener {
         String confirmPassword = new String(confirmPasswordField.getPassword());
         String firstName = firstNameField.getText();
         String lastName = lastNameField.getText();
+        String departmentName = departmentField.getText();
+        String jobTitle = jobTitleField.getText();
         String email = emailField.getText();
 
-        if (username.isBlank() || password.isBlank() || confirmPassword.isBlank() || firstName.isBlank() || lastName.isBlank() || email.isBlank()) {
+        if (username.isBlank() || password.isBlank() || confirmPassword.isBlank() || firstName.isBlank()
+                || lastName.isBlank() || email.isBlank()) {
             JOptionPane.showMessageDialog(this, "Fields cannot be empty!");
             return;
         }
@@ -132,7 +138,8 @@ public class SignupGUI extends JFrame implements ActionListener {
             confirmPasswordField.setText("");
             return;
         }
-        boolean added = Database.adduser(username, confirmPassword, (String)comboBox.getSelectedItem(), firstName, lastName, email);
+        boolean added = Database.addUser(username, confirmPassword, (String) comboBox.getSelectedItem(), firstName,
+                lastName, departmentName, jobTitle, email);
         if (!added) {
             JOptionPane.showMessageDialog(this, "Username is taken!");
             usernameField.setText("");
