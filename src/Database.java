@@ -67,6 +67,33 @@ public class Database {
         return true;
     }
 
+    public static boolean deleteUser(String username) {
+        if (!userExists(username)) {
+            System.out.println("User does not exist.");
+            return false;
+        }
+
+        String sql = "DELETE FROM user WHERE username = ?";
+
+        try (
+                Connection connection = DriverManager.getConnection(url);
+                PreparedStatement statement = connection.prepareStatement(sql);) {
+            statement.setString(1, username);
+
+            int rowsDeleted = statement.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("User deleted successfully!");
+                return true;
+            } else {
+                System.out.println("No user was deleted.");
+                return false;
+            }
+        } catch (SQLException e) {
+            System.err.println("Error deleting user: " + e.getMessage());
+            return false;
+        }
+    }
+
     public static User getUser(String username, String password) {
         String sql = "SELECT * FROM user WHERE username = ? AND password = ?";
 
@@ -110,4 +137,8 @@ public class Database {
         }
         return false;
     }
+
+    // public static void main(String[] args) {
+    // deleteUser("cjpark989");
+    // }
 }
