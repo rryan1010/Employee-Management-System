@@ -107,7 +107,7 @@ public class SignupGUI extends JFrame implements ActionListener {
         getContentPane().add(panel);
 
         // Setting custom logo
-        ImageIcon icon = new ImageIcon("logo.png");
+        ImageIcon icon = new ImageIcon("images/logo.png");
         setIconImage(icon.getImage());
 
         setVisible(true);

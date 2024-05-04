@@ -94,5 +94,6 @@ public class LoginGUI extends JFrame implements ActionListener {
         }
 
         JOptionPane.showMessageDialog(this, "Login Successful!");
+        return;
     }
 }
