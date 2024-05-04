@@ -19,7 +19,7 @@ public class Database {
     private static void createUserTable() {
         String sql = "CREATE TABLE IF NOT EXISTS user ("
                 + "user_id INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + "username TEXT NOT NULL,"
+                + "username TEXT NOT NULL UNIQUE,"
                 + "password TEXT NOT NULL,"
                 + "role TEXT NOT NULL CHECK(role IN ('Employee', 'Manager', 'HR')),"
                 + "first_name TEXT NOT NULL,"
@@ -41,29 +41,32 @@ public class Database {
         }
     }
 
-    public static boolean adduser(String username, String password, String type, String firstName, String lastName,
-            String email) {
+    public static boolean addUser(String username, String password, String role, String firstName, String lastName,
+            String department, String jobTitle, String email) {
         if (userExists(username))
             return false;
 
-        String sql = "INSERT INTO user (username, password, type, first_name, last_name, email) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO user (username, password, role, first_name, last_name, department, job_title, email) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (
                 Connection connection = DriverManager.getConnection(url);
                 PreparedStatement statement = connection.prepareStatement(sql);) {
             statement.setString(1, username);
             statement.setString(2, password);
-            statement.setString(3, type);
+            statement.setString(3, role);
             statement.setString(4, firstName);
             statement.setString(5, lastName);
-            statement.setString(6, email);
+            statement.setString(6, department);
+            statement.setString(7, jobTitle);
+            statement.setString(8, email);
 
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
-                System.out.println("Data inserted successfully!");
+                System.out.println("User added successfully!");
             }
         } catch (SQLException e) {
             System.err.println("Error inserting data: " + e.getMessage());
+            return false; // Ensure we return false when an exception is caught
         }
 
         return true;

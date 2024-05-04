@@ -11,8 +11,10 @@ public class SignupGUI extends JFrame implements ActionListener {
     private JComboBox<String> comboBox;
     private JTextField firstNameField;
     private JTextField lastNameField;
-    private JTextField emailField;
     private JButton signupButton;
+    private JTextField departmentField;
+    private JTextField jobTitleField;
+    private JTextField emailField;
 
     public SignupGUI() {
         setTitle("User Signup");
@@ -121,6 +123,8 @@ public class SignupGUI extends JFrame implements ActionListener {
         String confirmPassword = new String(confirmPasswordField.getPassword());
         String firstName = firstNameField.getText();
         String lastName = lastNameField.getText();
+        String departmentName = departmentField.getText();
+        String jobTitle = jobTitleField.getText();
         String email = emailField.getText();
 
         if (username.isBlank() || password.isBlank() || confirmPassword.isBlank() || firstName.isBlank()
@@ -134,8 +138,8 @@ public class SignupGUI extends JFrame implements ActionListener {
             confirmPasswordField.setText("");
             return;
         }
-        boolean added = Database.adduser(username, confirmPassword, (String) comboBox.getSelectedItem(), firstName,
-                lastName, email);
+        boolean added = Database.addUser(username, confirmPassword, (String) comboBox.getSelectedItem(), firstName,
+                lastName, departmentName, jobTitle, email);
         if (!added) {
             JOptionPane.showMessageDialog(this, "Username is taken!");
             usernameField.setText("");
