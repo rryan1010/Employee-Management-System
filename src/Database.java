@@ -18,12 +18,14 @@ public class Database {
 
     private static void createUserTable() {
         String sql = "CREATE TABLE IF NOT EXISTS user ("
-                + "id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "user_id INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + "username TEXT NOT NULL,"
                 + "password TEXT NOT NULL,"
-                + "type TEXT NOT NULL,"
+                + "role TEXT NOT NULL CHECK(role IN ('Employee', 'Manager', 'HR')),"
                 + "first_name TEXT NOT NULL,"
                 + "last_name TEXT NOT NULL,"
+                + "department TEXT,"
+                + "job_title TEXT,"
                 + "email TEXT NOT NULL)";
         connect(sql);
     }
