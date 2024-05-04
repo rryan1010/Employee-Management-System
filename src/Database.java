@@ -14,6 +14,7 @@ public class Database {
             return;
         }
         createUserTable();
+        createTaskTable();
     }
 
     private static void createUserTable() {
@@ -27,6 +28,19 @@ public class Database {
                 + "department TEXT,"
                 + "job_title TEXT,"
                 + "email TEXT NOT NULL)";
+        connect(sql);
+    }
+
+    private static void createTaskTable() {
+        String sql = "CREATE TABLE IF NOT EXISTS task ("
+                + "task_id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "description TEXT NOT NULL,"
+                + "status TEXT NOT NULL CHECK(status IN ('Assigned', 'Accepted', 'Rejected', 'Completed')),"
+                + "assigned_to INTEGER NOT NULL,"
+                + "assigned_by INTEGER NOT NULL,"
+                + "feedback TEXT,"
+                + "FOREIGN KEY (assigned_to) REFERENCES user (user_id),"
+                + "FOREIGN KEY (assigned_by) REFERENCES user (user_id));";
         connect(sql);
     }
 
