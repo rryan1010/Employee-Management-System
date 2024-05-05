@@ -220,6 +220,22 @@ public class Database {
         }
     }
 
+    public static void promoteEmployee(String username) {
+        String sql = "UPDATE user SET role = Manager WHERE username = ?";
+        try (Connection connection = DriverManager.getConnection(url);
+                PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, username);
+            int rowsUpdated = statement.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("Employee role updated successfully!");
+            } else {
+                System.out.println("No employee role was updated.");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error promoting employee to manager: " + e.getMessage());
+        }
+    }
+
     // Method to update task status
     public static void updateTaskStatus(int taskId, String newStatus) {
         String sql = "UPDATE task SET status = ? WHERE task_id = ?";

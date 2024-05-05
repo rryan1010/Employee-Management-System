@@ -63,7 +63,7 @@ public class HRGUI extends JFrame {
         formPanel.add(emailField);
 
         formPanel.add(new JLabel("Role:"));
-        String[] roles = {"Employee", "Manager", "HR"};
+        String[] roles = { "Employee", "Manager", "HR" };
         roleComboBox = new JComboBox<>(roles);
         formPanel.add(roleComboBox);
 
@@ -87,7 +87,8 @@ public class HRGUI extends JFrame {
         buttonPanel.add(updateButton);
         buttonPanel.add(deleteButton);
 
-        String[] columnNames = {"Username", "First Name", "Last Name", "Email", "Role", "Department", "Job Title"};
+        // Employee table
+        String[] columnNames = { "Username", "First Name", "Last Name", "Email", "Role", "Department", "Job Title" };
         Object[][] data = {}; // This should be dynamically loaded from database
         employeesTable = new JTable(data, columnNames);
         JScrollPane scrollPane = new JScrollPane(employeesTable);
@@ -112,7 +113,8 @@ public class HRGUI extends JFrame {
             JOptionPane.showMessageDialog(this, "Employee added successfully!");
             clearFields();
         } else {
-            JOptionPane.showMessageDialog(this, "Failed to add employee. Username might be taken or fields are incomplete.");
+            JOptionPane.showMessageDialog(this,
+                    "Failed to add employee. Username might be taken or fields are incomplete.");
         }
     }
 
@@ -154,7 +156,8 @@ public class HRGUI extends JFrame {
     }
 
     public static void main(String[] args) {
-        User user = new User("admin", "password", "HR", "Admin", "User", "HR Department", "HR Manager", "admin@example.com");
+        User user = new User("admin", "password", "HR", "Admin", "User", "HR Department", "HR Manager",
+                "admin@example.com");
         new HRGUI(user);
     }
 }
