@@ -39,11 +39,9 @@ public class Database {
                 + "description TEXT NOT NULL,"
                 + "status TEXT NOT NULL CHECK(status IN ('Assigned', 'Accepted', 'Rejected', 'Completed')),"
                 + "assigned_to TEXT,"
-                + "assigned_by TEXT,"
                 + "manager TEXT,"
                 + "feedback TEXT,"
                 + "FOREIGN KEY (assigned_to) REFERENCES user (username),"
-                + "FOREIGN KEY (assigned_by) REFERENCES user (username),"
                 + "FOREIGN KEY (manager) REFERENCES user (username))";
         connect(sql);
     }
@@ -163,17 +161,19 @@ public class Database {
         }
         return false;
     }
-    // 
-    public static boolean updateEmployee(String username, String firstName, String lastName, String role, String department, String jobTitle, String email) {
+
+    //
+    public static boolean updateEmployee(String username, String firstName, String lastName, String role,
+            String department, String jobTitle, String email) {
         if (!userExists(username)) {
             System.out.println("User does not exist.");
             return false;
         }
-    
+
         String sql = "UPDATE user SET first_name = ?, last_name = ?, role = ?, department = ?, job_title = ?, email = ? WHERE username = ?";
-    
+
         try (Connection connection = DriverManager.getConnection(url);
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, firstName);
             statement.setString(2, lastName);
             statement.setString(3, role);
@@ -181,7 +181,7 @@ public class Database {
             statement.setString(5, jobTitle);
             statement.setString(6, email);
             statement.setString(7, username);
-    
+
             int rowsUpdated = statement.executeUpdate();
             if (rowsUpdated > 0) {
                 System.out.println("User updated successfully!");
@@ -197,15 +197,16 @@ public class Database {
     }
     
 
-    public static boolean createTask(String title, String description, String assignedTo, String manager, String feedback) {
+    public static boolean createTask(String title, String description, String status, String assignedTo, String manager, String feedback) {
         String sql = "INSERT INTO task (title, description, status, assigned_to, manager, feedback) VALUES (?, ?, 'Assigned', ?, ?, ?)";
         try (Connection connection = DriverManager.getConnection(url);
              PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, title);
             statement.setString(2, description);
-            statement.setString(3, assignedTo);
-            statement.setString(4, manager);
-            statement.setString(5, feedback);
+            statement.setString(3, status);
+            statement.setString(4, assignedTo);
+            statement.setString(5, manager);
+            statement.setString(6, feedback);
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
                 System.out.println("Task created successfully!");
@@ -288,7 +289,7 @@ public class Database {
         }
     }
 
-    public static List<Task> getTasks(String username) {
+    public static List<Task> getEmployeeTasks(String username) {
         List<Task> tasks = new ArrayList<>();
         String sql = "SELECT * FROM task WHERE LOWER(assigned_to) = LOWER(?)";
 
@@ -304,10 +305,9 @@ public class Database {
                     String description = resultSet.getString("description");
                     String status = resultSet.getString("status");
                     String assignedTo = resultSet.getString("assignedTo");
-                    String assignedBy = resultSet.getString("assignedBy");
                     String manager = resultSet.getString("manager");
                     String feedback = resultSet.getString("feedback");
-                    tasks.add(new Task(id, title, description, status, assignedTo, assignedBy, manager, feedback));
+                    tasks.add(new Task(id, title, description, status, assignedTo, manager, feedback));
                 }
             }
         } catch (SQLException e) {
@@ -316,13 +316,59 @@ public class Database {
         return tasks;
     }
 
+    public static List<Task> getManagerTasks(String username) {
+        List<Task> tasks = new ArrayList<>();
+        String sql = "SELECT * FROM task WHERE LOWER(manager) = LOWER(?)";
+
+        try (
+                Connection connection = DriverManager.getConnection(url);
+                PreparedStatement statement = connection.prepareStatement(sql);) {
+            statement.setString(1, username);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("task_id");
+                    String title = resultSet.getString("title");
+                    String description = resultSet.getString("description");
+                    String status = resultSet.getString("status");
+                    String assignedTo = resultSet.getString("assignedTo");
+                    String manager = resultSet.getString("manager");
+                    String feedback = resultSet.getString("feedback");
+                    tasks.add(new Task(id, title, description, status, assignedTo, manager, feedback));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving data: " + e.getMessage());
+        }
+        return tasks;
+    }
+
+    public static boolean isEmployee(String username) {
+        String sql = "SELECT * FROM user WHERE username = ? AND role IN ('Employee', 'Manager')";
+
+        try (
+                Connection connection = DriverManager.getConnection(url);
+                PreparedStatement statement = connection.prepareStatement(sql);) {
+            statement.setString(1, username);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    return true;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving data: " + e.getMessage());
+        }
+        return false;
+    }
+
     public static boolean deleteTask(int taskId) {
         String sql = "DELETE FROM task WHERE task_id = ?";
-    
+
         try (Connection connection = DriverManager.getConnection(url);
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, taskId);
-    
+
             int rowsDeleted = statement.executeUpdate();
             if (rowsDeleted > 0) {
                 System.out.println("Task deleted successfully!");
@@ -337,37 +383,15 @@ public class Database {
         }
     }
 
-    
-    public static boolean promoteDemoteEmployee(String username, String newRole) {
-        String sql = "UPDATE user SET role = ? WHERE username = ?";
-    
-        try (Connection connection = DriverManager.getConnection(url);
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, newRole);
-            statement.setString(2, username);
-    
-            int rowsUpdated = statement.executeUpdate();
-            if (rowsUpdated > 0) {
-                System.out.println("Employee role updated successfully!");
-                return true;
-            } else {
-                System.out.println("No employee role was updated.");
-                return false;
-            }
-        } catch (SQLException e) {
-            System.err.println("Error updating employee role: " + e.getMessage());
-            return false;
-        }
-    }
-
+    // Talk about this with Taiwo and Ryan again
     //
     public static Object[][] getAllTasks() {
-        String sql = "SELECT task_id, title, description, status, assigned_to, manager FROM task";
+        String sql = "SELECT * FROM task";
         List<Object[]> taskList = new ArrayList<>();
 
         try (Connection connection = DriverManager.getConnection(url);
-             PreparedStatement statement = connection.prepareStatement(sql);
-             ResultSet resultSet = statement.executeQuery()) {
+                PreparedStatement statement = connection.prepareStatement(sql);
+                ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
                 Object[] row = new Object[6];
