@@ -23,7 +23,7 @@ public class SignupGUI extends JFrame implements ActionListener {
         setLocationRelativeTo(null);
         setResizable(false);
 
-        JPanel panel = new JPanel(new GridLayout(22, 1));
+        JPanel panel = new JPanel(new GridLayout(30, 1));
 
         JLabel titleLabel = new JLabel("Create A New Account");
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
@@ -38,7 +38,7 @@ public class SignupGUI extends JFrame implements ActionListener {
         JLabel confirmPasswordLabel = new JLabel("Confirm Password:");
         confirmPasswordField = new JPasswordField();
 
-        JLabel userTypeLabel = new JLabel("Type");
+        JLabel roleTypeLabel = new JLabel("Role");
         String[] options = { "Employee", "HR" };
         comboBox = new JComboBox<>(options);
         comboBox.setSelectedIndex(0);
@@ -48,6 +48,12 @@ public class SignupGUI extends JFrame implements ActionListener {
 
         JLabel lastNameLabel = new JLabel("Last Name:");
         lastNameField = new JTextField();
+
+        JLabel departmentLabel = new JLabel("Department Name:");
+        departmentField = new JTextField();
+
+        JLabel jobTitleLabel = new JLabel("Job Title:");
+        jobTitleField = new JTextField();
 
         JLabel emailLabel = new JLabel("Email:");
         emailField = new JTextField();
@@ -92,7 +98,7 @@ public class SignupGUI extends JFrame implements ActionListener {
         panel.add(passwordField);
         panel.add(confirmPasswordLabel);
         panel.add(confirmPasswordField);
-        panel.add(userTypeLabel);
+        panel.add(roleTypeLabel);
         panel.add(comboBox);
         panel.add(firstNameLabel);
         panel.add(firstNameField);
@@ -100,6 +106,10 @@ public class SignupGUI extends JFrame implements ActionListener {
         panel.add(lastNameField);
         panel.add(emailLabel);
         panel.add(emailField);
+        panel.add(departmentLabel);
+        panel.add(departmentField);
+        panel.add(jobTitleLabel);
+        panel.add(jobTitleField);
         panel.add(new JLabel());
         panel.add(signupButton);
         panel.add(new JLabel());
@@ -156,6 +166,8 @@ public class SignupGUI extends JFrame implements ActionListener {
         confirmPasswordField.setText("");
         firstNameField.setText("");
         lastNameField.setText("");
+        departmentField.setText("");
+        jobTitleField.setText("");
         emailField.setText("");
     }
 }
