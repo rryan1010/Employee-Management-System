@@ -23,7 +23,7 @@ public class EmployeeGUI extends JFrame {
         getContentPane().add(mainPanel);
 
         // Load profile information
-        String username = user.getUserName(); // this is a mock method
+        String username = user.getUsername(); // this is a mock method
         loadProfile(username);
 
         // Initialize task panels
