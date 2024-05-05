@@ -3,7 +3,7 @@ package src;
 public class User {
     private String username;
     private String password;
-    private String type;
+    public String type;
     private String firstName;
     private String lastName;
     private String email;

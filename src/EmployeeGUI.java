@@ -13,7 +13,7 @@ public class EmployeeGUI extends JFrame {
     private JPanel acceptedTasksPanel;
     private JPanel incomingTasksPanel;
 
-    public EmployeeGUI(String username) {
+    public EmployeeGUI(User user) {
         setTitle("Employee Dashboard");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -23,6 +23,7 @@ public class EmployeeGUI extends JFrame {
         getContentPane().add(mainPanel);
 
         // Load profile information
+        String username = user.getUserName(); // this is a mock method
         loadProfile(username);
 
         // Initialize task panels
