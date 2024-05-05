@@ -38,9 +38,13 @@ public class Database {
                 + "title TEXT NOT NULL,"
                 + "description TEXT NOT NULL,"
                 + "status TEXT NOT NULL CHECK(status IN ('Assigned', 'Accepted', 'Rejected', 'Completed')),"
+                + "assigned_to TEXT,"
+                + "assigned_by TEXT,"
+                + "manager TEXT,"
                 + "feedback TEXT,"
                 + "FOREIGN KEY (assigned_to) REFERENCES user (username),"
-                + "FOREIGN KEY (assigned_by) REFERENCES user (username));";
+                + "FOREIGN KEY (assigned_by) REFERENCES user (username),"
+                + "FOREIGN KEY (manager) REFERENCES user (username))";
         connect(sql);
     }
 
@@ -193,8 +197,8 @@ public class Database {
     }
     
 
-    public static void createTask(String title, String description, String status, String assignedTo, String assignedBy, String feedback) {
-        String sql = "INSERT INTO task (title, description, status, feedback, assigned_to, assgind_by) VALUES (?, ?, ?, ?, ?, ?)";
+    public static void createTask(String title, String description, String status, String assignedTo, String assignedBy, String manager, String feedback) {
+        String sql = "INSERT INTO task (title, description, status, assigned_to, assgined_by, manager, feedback) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (
                 Connection connection = DriverManager.getConnection(url);
@@ -202,9 +206,10 @@ public class Database {
             statement.setString(1, title);
             statement.setString(2, description);
             statement.setString(3, status);
-            statement.setString(4, feedback);
             statement.setString(5, assignedTo);
             statement.setString(6, assignedBy);
+            statement.setString(7, manager);
+            statement.setString(4, feedback);
 
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
@@ -286,8 +291,9 @@ public class Database {
                     String status = resultSet.getString("status");
                     String assignedTo = resultSet.getString("assignedTo");
                     String assignedBy = resultSet.getString("assignedBy");
+                    String manager = resultSet.getString("manager");
                     String feedback = resultSet.getString("feedback");
-                    tasks.add(new Task(id, title, description, status, assignedTo, assignedBy, feedback));
+                    tasks.add(new Task(id, title, description, status, assignedTo, assignedBy, manager, feedback));
                 }
             }
         } catch (SQLException e) {

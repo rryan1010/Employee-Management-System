@@ -4,17 +4,18 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
-public class EmployeeGUI extends JFrame {
+public class ManagerGUI extends JFrame {
     private JPanel mainPanel;
     private JPanel profilePanel;
+    private JPanel managerTasksPanel;
     private JPanel acceptedTasksPanel;
     private JPanel incomingTasksPanel;
     private User user;
 
-    public EmployeeGUI(User user) {
+    public ManagerGUI(User user) {
         this.user = user;
 
-        setTitle("Employee Dashboard");
+        setTitle("Manager Dashboard");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -25,6 +26,12 @@ public class EmployeeGUI extends JFrame {
         loadProfile();
 
         // Initialize task panels
+        JPanel tempPanel = new JPanel(new BorderLayout());
+
+        managerTasksPanel = new JPanel();
+        managerTasksPanel.setLayout(new BoxLayout(managerTasksPanel, BoxLayout.Y_AXIS));
+        managerTasksPanel.setBorder(BorderFactory.createTitledBorder("Manager"));
+
         acceptedTasksPanel = new JPanel();
         acceptedTasksPanel.setLayout(new BoxLayout(acceptedTasksPanel, BoxLayout.Y_AXIS));
         acceptedTasksPanel.setBorder(BorderFactory.createTitledBorder("Accepted Tasks"));
@@ -36,7 +43,10 @@ public class EmployeeGUI extends JFrame {
         // Load tasks
         loadTasks();
 
-        mainPanel.add(new JScrollPane(acceptedTasksPanel), BorderLayout.CENTER);
+        tempPanel.add(new JScrollPane(managerTasksPanel), BorderLayout.NORTH);
+        tempPanel.add(new JScrollPane(acceptedTasksPanel), BorderLayout.SOUTH);
+
+        mainPanel.add(new JScrollPane(tempPanel), BorderLayout.CENTER);
         mainPanel.add(new JScrollPane(incomingTasksPanel), BorderLayout.SOUTH);
 
         // Setting custom logo
@@ -61,6 +71,10 @@ public class EmployeeGUI extends JFrame {
 
     private void loadTasks() {
         List<Task> tasks = Database.getTasks(user.getUsername());
+
+        for (int i = 0; i < 15; i++) {
+            tasks.add(new Task(i, getTitle(), getName(), getName(), getName(), getTitle(), getWarningString(), getName()));
+        }
 
         for (Task task : tasks) {
             if (task.getStatus().equals("Accepted")) {
