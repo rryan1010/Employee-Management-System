@@ -103,7 +103,7 @@ public class LoginGUI extends JFrame implements ActionListener {
             new ManagerGUI(user);
         } else if (role.equals("HR")) {
             dispose();
-            // new HRGUI(user);
+            new HRGUI(user);
         }
         return;
     }

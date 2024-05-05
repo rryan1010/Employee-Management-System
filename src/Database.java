@@ -332,4 +332,57 @@ public class Database {
         }
         return false;
     }
+
+    public static boolean deleteTask(int taskId) {
+        String sql = "DELETE FROM task WHERE task_id = ?";
+    
+        try (Connection connection = DriverManager.getConnection(url);
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, taskId);
+    
+            int rowsDeleted = statement.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Task deleted successfully!");
+                return true;
+            } else {
+                System.out.println("No task was deleted.");
+                return false;
+            }
+        } catch (SQLException e) {
+            System.err.println("Error deleting task: " + e.getMessage());
+            return false;
+        }
+    }
+
+    
+
+
+    // Talk about this with Taiwo and Ryan again
+    
+    public static Object[][] getAllTasks() {
+        String sql = "SELECT * FROM task";
+        List<Object[]> taskList = new ArrayList<>();
+
+        try (Connection connection = DriverManager.getConnection(url);
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+
+            while (resultSet.next()) {
+                Object[] row = new Object[6];
+                row[0] = resultSet.getInt("task_id");
+                row[1] = resultSet.getString("title");
+                row[2] = resultSet.getString("description");
+                row[3] = resultSet.getString("status");
+                row[4] = resultSet.getString("assigned_to");
+                row[5] = resultSet.getString("manager");
+                taskList.add(row);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving tasks: " + e.getMessage());
+        }
+
+        return taskList.toArray(new Object[0][]);
+    }
+    
+
 }

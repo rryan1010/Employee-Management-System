@@ -1,163 +1,124 @@
 package src;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
 
 public class HRGUI extends JFrame {
     private JPanel mainPanel;
-    private User user; // HR user's details
+    private User user;
 
+    // Panels for different sections
+    private JPanel profilePanel, taskCreationPanel, employeeActionPanel;
+
+    // User Details Components
+    private JLabel nameLabel, roleLabel, departmentLabel, jobTitleLabel;
+
+    // Task Creation Components
+    private JTextField titleField, descriptionField, assignedToField, assignedByField, managerField, statusField, feedbackField;
+    private JButton createTaskButton;
+
+    // Employee Action Components
     private JTextField usernameField;
-    private JPasswordField passwordField;
-    private JTextField firstNameField;
-    private JTextField lastNameField;
-    private JTextField emailField;
-    private JComboBox<String> roleComboBox;
-    private JTextField departmentField;
-    private JTextField jobTitleField;
+    private JButton deleteEmployeeButton;
 
-    private JTable employeesTable;
-    private JButton addButton;
-    private JButton updateButton;
-    private JButton deleteButton;
+    // Task List Components
+    private JTable tasksTable;
+    private JScrollPane scrollPane;
 
     public HRGUI(User user) {
         this.user = user;
-
         setTitle("HR Dashboard");
-        setSize(1000, 700);
+        setSize(1200, 800);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
         mainPanel = new JPanel(new BorderLayout(10, 10));
-        setupUI();
-        getContentPane().add(mainPanel);
+        setupProfilePanel();
+        setupTaskCreationPanel();
+        setupEmployeeActionPanel();
+        setupTaskListPanel();
 
+        getContentPane().add(mainPanel);
         setVisible(true);
     }
 
-    private void setupUI() {
-        // Create panels
-        JPanel formPanel = new JPanel(new GridLayout(0, 2, 5, 5));
-        formPanel.setBorder(BorderFactory.createTitledBorder("Employee Details"));
+    private void setupProfilePanel() {
+        profilePanel = new JPanel();
+        profilePanel.setLayout(new BoxLayout(profilePanel, BoxLayout.Y_AXIS));
+        profilePanel.setBorder(BorderFactory.createTitledBorder("Profile Details"));
 
-        formPanel.add(new JLabel("Username:"));
+        nameLabel = new JLabel("Name: " + user.getFirstName() + " " + user.getLastName());
+        roleLabel = new JLabel("Role: " + user.getRole());
+        departmentLabel = new JLabel("Department: " + user.getDepartment());
+        jobTitleLabel = new JLabel("Job Title: " + user.getJobTitle());
+
+        profilePanel.add(nameLabel);
+        profilePanel.add(roleLabel);
+        profilePanel.add(departmentLabel);
+        profilePanel.add(jobTitleLabel);
+
+        mainPanel.add(profilePanel, BorderLayout.WEST);
+    }
+
+    private void setupTaskCreationPanel() {
+        taskCreationPanel = new JPanel();
+        taskCreationPanel.setLayout(new GridLayout(0, 2, 5, 5));
+        taskCreationPanel.setBorder(BorderFactory.createTitledBorder("Create Task"));
+
+        titleField = new JTextField(20);
+        descriptionField = new JTextField(20);
+        assignedToField = new JTextField(20);
+        assignedByField = new JTextField(20);
+        managerField = new JTextField(20);
+        statusField = new JTextField(20);
+        feedbackField = new JTextField(20);
+        createTaskButton = new JButton("Create Task");
+
+        taskCreationPanel.add(new JLabel("Title:"));
+        taskCreationPanel.add(titleField);
+        taskCreationPanel.add(new JLabel("Description:"));
+        taskCreationPanel.add(descriptionField);
+        taskCreationPanel.add(new JLabel("Assigned To:"));
+        taskCreationPanel.add(assignedToField);
+        taskCreationPanel.add(new JLabel("Assigned By:"));
+        taskCreationPanel.add(assignedByField);
+        taskCreationPanel.add(new JLabel("Manager:"));
+        taskCreationPanel.add(managerField);
+        taskCreationPanel.add(new JLabel("Status:"));
+        taskCreationPanel.add(statusField);
+        taskCreationPanel.add(new JLabel("Feedback:"));
+        taskCreationPanel.add(feedbackField);
+        taskCreationPanel.add(createTaskButton);
+
+        profilePanel.add(taskCreationPanel);
+    }
+
+    private void setupEmployeeActionPanel() {
+        employeeActionPanel = new JPanel(new GridLayout(0, 2, 5, 5));
+        employeeActionPanel.setBorder(BorderFactory.createTitledBorder("Employee Actions"));
+
         usernameField = new JTextField(20);
-        formPanel.add(usernameField);
+        deleteEmployeeButton = new JButton("Delete Employee");
 
-        formPanel.add(new JLabel("Password:"));
-        passwordField = new JPasswordField(20);
-        formPanel.add(passwordField);
+        employeeActionPanel.add(new JLabel("Username:"));
+        employeeActionPanel.add(usernameField);
+        employeeActionPanel.add(deleteEmployeeButton);
 
-        formPanel.add(new JLabel("First Name:"));
-        firstNameField = new JTextField(20);
-        formPanel.add(firstNameField);
-
-        formPanel.add(new JLabel("Last Name:"));
-        lastNameField = new JTextField(20);
-        formPanel.add(lastNameField);
-
-        formPanel.add(new JLabel("Email:"));
-        emailField = new JTextField(20);
-        formPanel.add(emailField);
-
-        formPanel.add(new JLabel("Role:"));
-        String[] roles = { "Employee", "Manager", "HR" };
-        roleComboBox = new JComboBox<>(roles);
-        formPanel.add(roleComboBox);
-
-        formPanel.add(new JLabel("Department:"));
-        departmentField = new JTextField(20);
-        formPanel.add(departmentField);
-
-        formPanel.add(new JLabel("Job Title:"));
-        jobTitleField = new JTextField(20);
-        formPanel.add(jobTitleField);
-
-        addButton = new JButton("Add Employee");
-        addButton.addActionListener(this::addEmployee);
-        updateButton = new JButton("Update Employee");
-        updateButton.addActionListener(this::updateEmployee);
-        deleteButton = new JButton("Delete Employee");
-        deleteButton.addActionListener(this::deleteEmployee);
-
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(addButton);
-        buttonPanel.add(updateButton);
-        buttonPanel.add(deleteButton);
-
-        // Employee table
-        String[] columnNames = { "Username", "First Name", "Last Name", "Email", "Role", "Department", "Job Title" };
-        Object[][] data = {}; // This should be dynamically loaded from database
-        employeesTable = new JTable(data, columnNames);
-        JScrollPane scrollPane = new JScrollPane(employeesTable);
-        employeesTable.setFillsViewportHeight(true);
-
-        mainPanel.add(formPanel, BorderLayout.NORTH);
-        mainPanel.add(buttonPanel, BorderLayout.CENTER);
-        mainPanel.add(scrollPane, BorderLayout.SOUTH);
+        profilePanel.add(employeeActionPanel);
     }
 
-    private void addEmployee(ActionEvent e) {
-        String username = usernameField.getText();
-        String password = new String(passwordField.getPassword());
-        String firstName = firstNameField.getText();
-        String lastName = lastNameField.getText();
-        String email = emailField.getText();
-        String role = (String) roleComboBox.getSelectedItem();
-        String department = departmentField.getText();
-        String jobTitle = jobTitleField.getText();
+    private void setupTaskListPanel() {
+        tasksTable = new JTable();
+        scrollPane = new JScrollPane(tasksTable);
+        tasksTable.setFillsViewportHeight(true);
 
-        if (Database.addUser(username, password, role, firstName, lastName, department, jobTitle, email)) {
-            JOptionPane.showMessageDialog(this, "Employee added successfully!");
-            clearFields();
-        } else {
-            JOptionPane.showMessageDialog(this,
-                    "Failed to add employee. Username might be taken or fields are incomplete.");
-        }
-    }
-
-    private void updateEmployee(ActionEvent e) {
-        String username = usernameField.getText();
-        String firstName = firstNameField.getText();
-        String lastName = lastNameField.getText();
-        String email = emailField.getText();
-        String role = (String) roleComboBox.getSelectedItem();
-        String department = departmentField.getText();
-        String jobTitle = jobTitleField.getText();
-
-        boolean success = Database.updateEmployee(username, firstName, lastName, role, department, jobTitle, email);
-        if (success) {
-            JOptionPane.showMessageDialog(this, "Employee details updated successfully.");
-        } else {
-            JOptionPane.showMessageDialog(this, "Failed to update employee details.");
-        }
-    }
-
-    private void deleteEmployee(ActionEvent e) {
-        String username = usernameField.getText();
-        if (Database.deleteUser(username)) {
-            JOptionPane.showMessageDialog(this, "Employee deleted successfully!");
-        } else {
-            JOptionPane.showMessageDialog(this, "Failed to delete employee.");
-        }
-    }
-
-    private void clearFields() {
-        usernameField.setText("");
-        passwordField.setText("");
-        firstNameField.setText("");
-        lastNameField.setText("");
-        emailField.setText("");
-        departmentField.setText("");
-        jobTitleField.setText("");
-        roleComboBox.setSelectedIndex(0);
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
     }
 
     public static void main(String[] args) {
-        User user = new User("admin", "password", "HR", "Admin", "User", "HR Department", "HR Manager",
-                "admin@example.com");
+        User user = new User("Taiwo Oso", "password", "Manager", "Taiwo", "Oso", "CS Department", "Software Engineer", "taiwo@example.com");
         new HRGUI(user);
     }
 }
