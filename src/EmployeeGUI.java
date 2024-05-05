@@ -53,7 +53,7 @@ public class EmployeeGUI extends JFrame {
         profilePanel.setLayout(new BoxLayout(profilePanel, BoxLayout.Y_AXIS));
         profilePanel.setBorder(BorderFactory.createTitledBorder("Profile Details"));
 
-        profilePanel.add(new JLabel("Name: " + user.getFirstName()+" "+user.getLastName()));
+        profilePanel.add(new JLabel("Name: " + user.getFirstName() + " " + user.getLastName()));
         profilePanel.add(new JLabel("Department: " + user.getDepartment()));
         profilePanel.add(new JLabel("Role: " + user.getRole()));
         profilePanel.add(new JLabel("Job Title: " + user.getJobTitle()));
@@ -67,7 +67,7 @@ public class EmployeeGUI extends JFrame {
         for (int i = 0; i < 10; i++) {
             tasks.add(new Task(i, "title", "description", "Not Accepted", "Taiwo", "Admin", getName()));
         }
-        for (int i = 0; i < 10; i+=2) {
+        for (int i = 0; i < 10; i += 2) {
             tasks.get(i).setStatus("Accepted");
         }
 
