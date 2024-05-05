@@ -157,7 +157,45 @@ public class Database {
         return false;
     }
 
+
     // public static void main(String[] args) {
     // deleteUser("cjpark989");
     // }
+
+
+    // Method to update task status
+    public static void updateTaskStatus(int taskId, String newStatus) {
+        String sql = "UPDATE task SET status = ? WHERE task_id = ?";
+        try (Connection connection = DriverManager.getConnection(url);
+            PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, newStatus);
+            statement.setInt(2, taskId);
+            int rowsUpdated = statement.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("Task status updated successfully!");
+            } else {
+                System.out.println("No task was updated.");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error updating task status: " + e.getMessage());
+        }
+    }
+
+    // Method to update feedback for a task
+    public static void updateTaskFeedback(int taskId, String newFeedback) {
+        String sql = "UPDATE task SET feedback = ? WHERE task_id = ?";
+        try (Connection connection = DriverManager.getConnection(url);
+            PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, newFeedback);
+            statement.setInt(2, taskId);
+            int rowsUpdated = statement.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("Task feedback updated successfully!");
+            } else {
+                System.out.println("No feedback was updated.");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error updating task feedback: " + e.getMessage());
+        }
+    }
 }
