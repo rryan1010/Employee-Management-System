@@ -159,6 +159,39 @@ public class Database {
         }
         return false;
     }
+    // 
+    public static boolean updateEmployee(String username, String firstName, String lastName, String role, String department, String jobTitle, String email) {
+        if (!userExists(username)) {
+            System.out.println("User does not exist.");
+            return false;
+        }
+    
+        String sql = "UPDATE user SET first_name = ?, last_name = ?, role = ?, department = ?, job_title = ?, email = ? WHERE username = ?";
+    
+        try (Connection connection = DriverManager.getConnection(url);
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, firstName);
+            statement.setString(2, lastName);
+            statement.setString(3, role);
+            statement.setString(4, department);
+            statement.setString(5, jobTitle);
+            statement.setString(6, email);
+            statement.setString(7, username);
+    
+            int rowsUpdated = statement.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("User updated successfully!");
+                return true;
+            } else {
+                System.out.println("No user was updated.");
+                return false;
+            }
+        } catch (SQLException e) {
+            System.err.println("Error updating user: " + e.getMessage());
+            return false;
+        }
+    }
+    
 
     // Method to update task status
     public static void updateTaskStatus(int taskId, String newStatus) {

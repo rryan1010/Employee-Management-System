@@ -2,6 +2,7 @@ package src;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 
 public class HRGUI extends JFrame {
     private JPanel mainPanel;
@@ -41,7 +42,6 @@ public class HRGUI extends JFrame {
         JPanel formPanel = new JPanel(new GridLayout(0, 2, 5, 5));
         formPanel.setBorder(BorderFactory.createTitledBorder("Employee Details"));
 
-        // Fields for employee data
         formPanel.add(new JLabel("Username:"));
         usernameField = new JTextField(20);
         formPanel.add(usernameField);
@@ -75,34 +75,30 @@ public class HRGUI extends JFrame {
         jobTitleField = new JTextField(20);
         formPanel.add(jobTitleField);
 
-        // Buttons for operations
         addButton = new JButton("Add Employee");
-        addButton.addActionListener(e -> addEmployee());
+        addButton.addActionListener(this::addEmployee);
         updateButton = new JButton("Update Employee");
-        updateButton.addActionListener(e -> updateEmployee());
+        updateButton.addActionListener(this::updateEmployee);
         deleteButton = new JButton("Delete Employee");
-        deleteButton.addActionListener(e -> deleteEmployee());
+        deleteButton.addActionListener(this::deleteEmployee);
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(addButton);
         buttonPanel.add(updateButton);
         buttonPanel.add(deleteButton);
 
-        // Employee table
         String[] columnNames = {"Username", "First Name", "Last Name", "Email", "Role", "Department", "Job Title"};
         Object[][] data = {}; // This should be dynamically loaded from database
         employeesTable = new JTable(data, columnNames);
         JScrollPane scrollPane = new JScrollPane(employeesTable);
         employeesTable.setFillsViewportHeight(true);
 
-        // Add components to main panel
         mainPanel.add(formPanel, BorderLayout.NORTH);
         mainPanel.add(buttonPanel, BorderLayout.CENTER);
         mainPanel.add(scrollPane, BorderLayout.SOUTH);
     }
 
-    private void addEmployee() {
-        // Collect data from fields and add to database
+    private void addEmployee(ActionEvent e) {
         String username = usernameField.getText();
         String password = new String(passwordField.getPassword());
         String firstName = firstNameField.getText();
@@ -120,12 +116,24 @@ public class HRGUI extends JFrame {
         }
     }
 
-    private void updateEmployee() {
-        // Update employee details in the database
+    private void updateEmployee(ActionEvent e) {
+        String username = usernameField.getText();
+        String firstName = firstNameField.getText();
+        String lastName = lastNameField.getText();
+        String email = emailField.getText();
+        String role = (String) roleComboBox.getSelectedItem();
+        String department = departmentField.getText();
+        String jobTitle = jobTitleField.getText();
+
+        boolean success = Database.updateEmployee(username, firstName, lastName, role, department, jobTitle, email);
+        if (success) {
+            JOptionPane.showMessageDialog(this, "Employee details updated successfully.");
+        } else {
+            JOptionPane.showMessageDialog(this, "Failed to update employee details.");
+        }
     }
 
-    private void deleteEmployee() {
-        // Delete employee from the database
+    private void deleteEmployee(ActionEvent e) {
         String username = usernameField.getText();
         if (Database.deleteUser(username)) {
             JOptionPane.showMessageDialog(this, "Employee deleted successfully!");
