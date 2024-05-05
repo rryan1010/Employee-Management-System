@@ -72,16 +72,6 @@ public class ManagerGUI extends JFrame {
     private void loadTasks() {
         List<Task> tasks = Database.getTasks(user.getUsername());
 
-        for (int i = 0; i < 15; i++) {
-            tasks.add(new Task(i, "title", "desc", "Assigned", "Taiwo", "Kehinde", "Feedback"));
-        }
-        for (int i = 0; i < 5; i++) {
-            tasks.get(i).setStatus("Accepted");
-        }
-        for (int i = 5; i < 10; i++) {
-            tasks.get(i).setManager(user.getUsername());
-        }
-
         for (Task task : tasks) {
             if (task.getStatus().equals("Accepted")) {
                 addTaskToPanel(task, acceptedTasksPanel, true);
