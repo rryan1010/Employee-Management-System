@@ -2,15 +2,17 @@ package src;
 
 public class Task {
     private int taskId;
+    private String title;
     private String description;
     private String status;
-    private int assignedTo;
-    private int assignedBy;
+    private String assignedTo;
+    private String assignedBy;
     private String feedback;
 
     // Constructor
-    public Task(int taskId, String description, String status, int assignedTo, int assignedBy, String feedback) {
+    public Task(int taskId, String title, String description, String status, String assignedTo, String assignedBy, String feedback) {
         this.taskId = taskId;
+        this.title = title;
         this.description = description;
         this.status = status;
         this.assignedTo = assignedTo;
@@ -25,6 +27,14 @@ public class Task {
 
     public void setTaskId(int taskId) {
         this.taskId = taskId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDescription() {
@@ -43,19 +53,19 @@ public class Task {
         this.status = status;
     }
 
-    public int getAssignedTo() {
+    public String getAssignedTo() {
         return assignedTo;
     }
 
-    public void setAssignedTo(int assignedTo) {
+    public void setAssignedTo(String assignedTo) {
         this.assignedTo = assignedTo;
     }
 
-    public int getAssignedBy() {
+    public String getAssignedBy() {
         return assignedBy;
     }
 
-    public void setAssignedBy(int assignedBy) {
+    public void setAssignedBy(String assignedBy) {
         this.assignedBy = assignedBy;
     }
 
@@ -71,6 +81,7 @@ public class Task {
     public String toString() {
         return "Task{" +
                "taskId=" + taskId +
+               ", title='" + title + '\'' +
                ", description='" + description + '\'' +
                ", status='" + status + '\'' +
                ", assignedTo=" + assignedTo +

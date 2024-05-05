@@ -1,6 +1,7 @@
 package src;
 
 import java.sql.*;
+import java.util.*;
 
 public class Database {
     private static String url = "jdbc:sqlite:databases/database.db";
@@ -34,13 +35,12 @@ public class Database {
     private static void createTaskTable() {
         String sql = "CREATE TABLE IF NOT EXISTS task ("
                 + "task_id INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "title TEXT NOT NULL,"
                 + "description TEXT NOT NULL,"
                 + "status TEXT NOT NULL CHECK(status IN ('Assigned', 'Accepted', 'Rejected', 'Completed')),"
-                + "assigned_to INTEGER NOT NULL,"
-                + "assigned_by INTEGER NOT NULL,"
                 + "feedback TEXT,"
-                + "FOREIGN KEY (assigned_to) REFERENCES user (user_id),"
-                + "FOREIGN KEY (assigned_by) REFERENCES user (user_id));";
+                + "FOREIGN KEY (assigned_to) REFERENCES user (username),"
+                + "FOREIGN KEY (assigned_by) REFERENCES user (username));";
         connect(sql);
     }
 
@@ -160,12 +160,6 @@ public class Database {
         return false;
     }
 
-
-    // public static void main(String[] args) {
-    // deleteUser("cjpark989");
-    // }
-
-
     // Method to update task status
     public static void updateTaskStatus(int taskId, String newStatus) {
         String sql = "UPDATE task SET status = ? WHERE task_id = ?";
@@ -200,5 +194,32 @@ public class Database {
         } catch (SQLException e) {
             System.err.println("Error updating task feedback: " + e.getMessage());
         }
+    }
+
+    public static List<Task> getTasks(String username) {
+        List<Task> tasks = new ArrayList<>();
+        String sql = "SELECT * FROM task WHERE LOWER(assigned_to) = LOWER(?)";
+
+        try (
+                Connection connection = DriverManager.getConnection(url);
+                PreparedStatement statement = connection.prepareStatement(sql);) {
+            statement.setString(1, username);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("task_id");
+                    String title = resultSet.getString("title");
+                    String description = resultSet.getString("description");
+                    String status = resultSet.getString("status");
+                    String assignedTo = resultSet.getString("assignedTo");
+                    String assignedBy = resultSet.getString("assignedBy");
+                    String feedback = resultSet.getString("feedback");
+                    tasks.add(new Task(id, title, description, status, assignedTo, assignedBy, feedback));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving data: " + e.getMessage());
+        }
+        return tasks;
     }
 }
