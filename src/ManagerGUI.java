@@ -70,7 +70,7 @@ public class ManagerGUI extends JFrame {
     }
 
     private void loadTasks() {
-        List<Task> tasks = Database.getTasks(user.getUsername());
+        List<Task> tasks = Database.getEmployeeTasks(user.getUsername());
 
         for (Task task : tasks) {
             if (task.getStatus().equals("Accepted")) {
@@ -159,8 +159,8 @@ public class ManagerGUI extends JFrame {
         }
 
         if (Database.isEmployee(username)) {
-            Database.createTask(task.getTitle(), task.getDescription(), task.getStatus(), 
-                username, user.getUsername(), "");
+            Database.createTask(task.getTitle(), task.getDescription(), task.getStatus(),
+                    username, user.getUsername(), "");
             return true;
         }
 

@@ -161,17 +161,19 @@ public class Database {
         }
         return false;
     }
-    // 
-    public static boolean updateEmployee(String username, String firstName, String lastName, String role, String department, String jobTitle, String email) {
+
+    //
+    public static boolean updateEmployee(String username, String firstName, String lastName, String role,
+            String department, String jobTitle, String email) {
         if (!userExists(username)) {
             System.out.println("User does not exist.");
             return false;
         }
-    
+
         String sql = "UPDATE user SET first_name = ?, last_name = ?, role = ?, department = ?, job_title = ?, email = ? WHERE username = ?";
-    
+
         try (Connection connection = DriverManager.getConnection(url);
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, firstName);
             statement.setString(2, lastName);
             statement.setString(3, role);
@@ -179,7 +181,7 @@ public class Database {
             statement.setString(5, jobTitle);
             statement.setString(6, email);
             statement.setString(7, username);
-    
+
             int rowsUpdated = statement.executeUpdate();
             if (rowsUpdated > 0) {
                 System.out.println("User updated successfully!");
@@ -193,9 +195,9 @@ public class Database {
             return false;
         }
     }
-    
 
-    public static void createTask(String title, String description, String status, String assignedTo, String manager, String feedback) {
+    public static void createTask(String title, String description, String status, String assignedTo, String manager,
+            String feedback) {
         String sql = "INSERT INTO task (title, description, status, assigned_to, manager, feedback) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (
@@ -287,9 +289,36 @@ public class Database {
         }
     }
 
-    public static List<Task> getTasks(String username) {
+    public static List<Task> getEmployeeTasks(String username) {
         List<Task> tasks = new ArrayList<>();
         String sql = "SELECT * FROM task WHERE LOWER(assigned_to) = LOWER(?)";
+
+        try (
+                Connection connection = DriverManager.getConnection(url);
+                PreparedStatement statement = connection.prepareStatement(sql);) {
+            statement.setString(1, username);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    int id = resultSet.getInt("task_id");
+                    String title = resultSet.getString("title");
+                    String description = resultSet.getString("description");
+                    String status = resultSet.getString("status");
+                    String assignedTo = resultSet.getString("assignedTo");
+                    String manager = resultSet.getString("manager");
+                    String feedback = resultSet.getString("feedback");
+                    tasks.add(new Task(id, title, description, status, assignedTo, manager, feedback));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving data: " + e.getMessage());
+        }
+        return tasks;
+    }
+
+    public static List<Task> getManagerTasks(String username) {
+        List<Task> tasks = new ArrayList<>();
+        String sql = "SELECT * FROM task WHERE LOWER(manager) = LOWER(?)";
 
         try (
                 Connection connection = DriverManager.getConnection(url);
@@ -335,11 +364,11 @@ public class Database {
 
     public static boolean deleteTask(int taskId) {
         String sql = "DELETE FROM task WHERE task_id = ?";
-    
+
         try (Connection connection = DriverManager.getConnection(url);
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, taskId);
-    
+
             int rowsDeleted = statement.executeUpdate();
             if (rowsDeleted > 0) {
                 System.out.println("Task deleted successfully!");
@@ -360,8 +389,8 @@ public class Database {
         List<Object[]> taskList = new ArrayList<>();
 
         try (Connection connection = DriverManager.getConnection(url);
-             PreparedStatement statement = connection.prepareStatement(sql);
-             ResultSet resultSet = statement.executeQuery()) {
+                PreparedStatement statement = connection.prepareStatement(sql);
+                ResultSet resultSet = statement.executeQuery()) {
 
             while (resultSet.next()) {
                 Object[] row = new Object[6];
