@@ -3,8 +3,6 @@ package src;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-// import java.awt.event.ActionEvent;
-// import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -56,9 +54,9 @@ public class EmployeeGUI extends JFrame {
         profilePanel.setBorder(BorderFactory.createTitledBorder("Profile Details"));
 
         profilePanel.add(new JLabel("Name: " + user.getFirstName()+" "+user.getLastName()));
-        profilePanel.add(new JLabel("Department: " + "CS Department"));
-        profilePanel.add(new JLabel("Role: " + "Employee"));
-        profilePanel.add(new JLabel("Job Title: " + "Software Engineer"));
+        profilePanel.add(new JLabel("Department: " + user.getDepartment()));
+        profilePanel.add(new JLabel("Role: " + user.getRole()));
+        profilePanel.add(new JLabel("Job Title: " + user.getJobTitle()));
 
         mainPanel.add(profilePanel, BorderLayout.WEST);
     }
@@ -66,11 +64,11 @@ public class EmployeeGUI extends JFrame {
     private void loadTasks() {
         // Mockup method to return a list of tasks
         List<Task> tasks = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            tasks.add(new Task("Accepted"));
+        for (int i = 0; i < 10; i++) {
+            tasks.add(new Task(i, "title", "description", "Not Accepted", "Taiwo", "Admin", getName()));
         }
-        for (int i = 0; i < 5; i++) {
-            tasks.add(new Task("No"));
+        for (int i = 0; i < 10; i+=2) {
+            tasks.get(i).setStatus("Accepted");
         }
 
         for (Task task : tasks) {
