@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.List;
 
 public class HRGUI extends JFrame {
     private JPanel mainPanel;
@@ -16,12 +17,13 @@ public class HRGUI extends JFrame {
     private JLabel nameLabel, roleLabel, departmentLabel, jobTitleLabel;
 
     // Task Creation Components
-    private JTextField titleField, descriptionField, assignedToField, assignedByField, managerField, statusField, feedbackField;
+    private JTextField titleField, descriptionField, statusField, feedbackField;
+    private JComboBox<String> assignedToDropdown, managerDropdown;
     private JButton createTaskButton;
 
     // Employee Action Components
-    private JTextField usernameField;
-    private JButton deleteEmployeeButton;
+    private JComboBox<String> usernameDropdown;
+    private JButton deleteEmployeeButton, editEmployeeButton;
 
     // Task List Components
     private JTable tasksTable;
@@ -69,25 +71,26 @@ public class HRGUI extends JFrame {
 
         titleField = new JTextField(20);
         descriptionField = new JTextField(20);
-        assignedToField = new JTextField(20);
-        assignedByField = new JTextField(20);
-        managerField = new JTextField(20);
         statusField = new JTextField(20);
         feedbackField = new JTextField(20);
         createTaskButton = new JButton("Create Task");
+        createTaskButton.addActionListener(this::createTask);
+
+        assignedToDropdown = new JComboBox<>();
+        managerDropdown = new JComboBox<>();
+
+        populateUserDropdowns();
 
         taskCreationPanel.add(new JLabel("Title:"));
         taskCreationPanel.add(titleField);
         taskCreationPanel.add(new JLabel("Description:"));
         taskCreationPanel.add(descriptionField);
-        taskCreationPanel.add(new JLabel("Assigned To:"));
-        taskCreationPanel.add(assignedToField);
-        taskCreationPanel.add(new JLabel("Assigned By:"));
-        taskCreationPanel.add(assignedByField);
-        taskCreationPanel.add(new JLabel("Manager:"));
-        taskCreationPanel.add(managerField);
         taskCreationPanel.add(new JLabel("Status:"));
         taskCreationPanel.add(statusField);
+        taskCreationPanel.add(new JLabel("Assigned To:"));
+        taskCreationPanel.add(assignedToDropdown);
+        taskCreationPanel.add(new JLabel("Manager:"));
+        taskCreationPanel.add(managerDropdown);
         taskCreationPanel.add(new JLabel("Feedback:"));
         taskCreationPanel.add(feedbackField);
         taskCreationPanel.add(createTaskButton);
@@ -99,12 +102,16 @@ public class HRGUI extends JFrame {
         employeeActionPanel = new JPanel(new GridLayout(0, 2, 5, 5));
         employeeActionPanel.setBorder(BorderFactory.createTitledBorder("Employee Actions"));
 
-        usernameField = new JTextField(20);
+        usernameDropdown = new JComboBox<>();
         deleteEmployeeButton = new JButton("Delete Employee");
+        editEmployeeButton = new JButton("Edit Employee Details");
+
+        populateUserDropdowns();
 
         employeeActionPanel.add(new JLabel("Username:"));
-        employeeActionPanel.add(usernameField);
+        employeeActionPanel.add(usernameDropdown);
         employeeActionPanel.add(deleteEmployeeButton);
+        employeeActionPanel.add(editEmployeeButton);
 
         profilePanel.add(employeeActionPanel);
     }
@@ -115,6 +122,47 @@ public class HRGUI extends JFrame {
         tasksTable.setFillsViewportHeight(true);
 
         mainPanel.add(scrollPane, BorderLayout.CENTER);
+    }
+
+    private void populateUserDropdowns() {
+        List<String> usernames = Database.getEmployeeUsernames(); // Implement this method in Database
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(usernames.toArray(new String[0]));
+        assignedToDropdown.setModel(model);
+        managerDropdown.setModel(model);
+        usernameDropdown.setModel(model);
+    }
+
+    private void createTask(ActionEvent e) {
+        if (titleField.getText().isEmpty() ||
+            descriptionField.getText().isEmpty() ||
+            statusField.getText().isEmpty() ||
+            assignedToDropdown.getSelectedItem() == null ||
+            managerDropdown.getSelectedItem() == null) {
+            JOptionPane.showMessageDialog(this, "All fields must be filled out.", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        boolean success = Database.createTaskDB(
+            titleField.getText(), 
+            descriptionField.getText(), 
+            statusField.getText(),
+            assignedToDropdown.getSelectedItem().toString(), 
+            managerDropdown.getSelectedItem().toString(), 
+            feedbackField.getText()
+        );
+
+        if (success) {
+            JOptionPane.showMessageDialog(this, "Task created successfully!");
+            refreshTaskTable();
+        } else {
+            JOptionPane.showMessageDialog(this, "Failed to create task.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    private void refreshTaskTable() {
+        Object[][] data = Database.getAllTasks();
+        DefaultTableModel model = new DefaultTableModel(data, new String[] {"Task ID", "Title", "Description", "Status", "Assigned To", "Manager"});
+        tasksTable.setModel(model);
     }
 
     public static void main(String[] args) {
