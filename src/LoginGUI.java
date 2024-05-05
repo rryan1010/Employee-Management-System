@@ -95,15 +95,15 @@ public class LoginGUI extends JFrame implements ActionListener {
         }
 
         JOptionPane.showMessageDialog(this, "Login Successful!");
-        if (user.type.equals("Employee")) {
+        if (user.getRole().equals("Employee")) {
             dispose();
             new EmployeeGUI(user);
-        } else if (user.type.equals("Manager")) {
+        } else if (user.getRole().equals("Manager")) {
             dispose();
-            new ManagerGUI(user);
-        } else if (user.type.equals("HR")) {
+            // new ManagerGUI(user);
+        } else if (user.getRole().equals("HR")) {
             dispose();
-            new HRGUI(user);
+            // new HRGUI(user);
         }
         return;
     }

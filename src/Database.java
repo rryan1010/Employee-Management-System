@@ -27,7 +27,7 @@ public class Database {
                 + "last_name TEXT NOT NULL,"
                 + "department TEXT,"
                 + "job_title TEXT,"
-                + "email TEXT NOT NULL)";
+                + "email TEXT NOT NULL UNIQUE)";
         connect(sql);
     }
 
@@ -124,11 +124,14 @@ public class Database {
 
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
-                    String type = resultSet.getString("type");
+                    String role = resultSet.getString("role");
                     String firstName = resultSet.getString("first_name");
                     String lastName = resultSet.getString("last_name");
                     String email = resultSet.getString("email");
-                    User user = new User(username, password, type, firstName, lastName, email);
+                    String departmentName = resultSet.getString("department");
+                    String jobTitle = resultSet.getString("job_title");
+                    User user = new User(username, password, role, firstName, lastName, departmentName, jobTitle,
+                            email);
                     return user;
                 }
             }

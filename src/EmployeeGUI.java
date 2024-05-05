@@ -5,26 +5,28 @@ import java.awt.*;
 import java.awt.event.*;
 // import java.awt.event.ActionEvent;
 // import java.awt.event.ActionListener;
-// import java.util.ArrayList;
+import java.util.List;
+import java.util.ArrayList;
 
 public class EmployeeGUI extends JFrame {
     private JPanel mainPanel;
     private JPanel profilePanel;
     private JPanel acceptedTasksPanel;
     private JPanel incomingTasksPanel;
+    private User user;
 
     public EmployeeGUI(User user) {
+        this.user = user;
+
         setTitle("Employee Dashboard");
         setSize(800, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null); // Center the window
+        setLocationRelativeTo(null);
 
         mainPanel = new JPanel(new BorderLayout());
         getContentPane().add(mainPanel);
 
-        // Load profile information
-        String username = user.getUserName(); // this is a mock method
-        loadProfile(username);
+        loadProfile();
 
         // Initialize task panels
         acceptedTasksPanel = new JPanel();
@@ -36,34 +38,40 @@ public class EmployeeGUI extends JFrame {
         incomingTasksPanel.setBorder(BorderFactory.createTitledBorder("Incoming Tasks"));
 
         // Load tasks
-        loadTasks(username);
+        loadTasks();
 
         mainPanel.add(new JScrollPane(acceptedTasksPanel), BorderLayout.CENTER);
         mainPanel.add(new JScrollPane(incomingTasksPanel), BorderLayout.SOUTH);
 
+        // Setting custom logo
+        ImageIcon icon = new ImageIcon("images/logo.png");
+        setIconImage(icon.getImage());
+
         setVisible(true);
     }
 
-    private void loadProfile(String username) {
-        // Mockup method to return an employee
-        Employee employee = getEmployeeDetails(username);
-
+    private void loadProfile() {
         profilePanel = new JPanel();
         profilePanel.setLayout(new BoxLayout(profilePanel, BoxLayout.Y_AXIS));
         profilePanel.setBorder(BorderFactory.createTitledBorder("Profile Details"));
 
-        profilePanel.add(new JLabel("Name: " + employee.getName()));
-        profilePanel.add(new JLabel("Username: " + employee.getUsername()));
-        profilePanel.add(new JLabel("Department: " + employee.getDepartment()));
-        profilePanel.add(new JLabel("Role: " + employee.getRole()));
-        profilePanel.add(new JLabel("Job Title: " + employee.getJobTitle()));
+        profilePanel.add(new JLabel("Name: " + user.getFirstName()+" "+user.getLastName()));
+        profilePanel.add(new JLabel("Department: " + "CS Department"));
+        profilePanel.add(new JLabel("Role: " + "Employee"));
+        profilePanel.add(new JLabel("Job Title: " + "Software Engineer"));
 
         mainPanel.add(profilePanel, BorderLayout.WEST);
     }
 
-    private void loadTasks(String username) {
+    private void loadTasks() {
         // Mockup method to return a list of tasks
-        List<Task> tasks = getTasksForEmployee(username);
+        List<Task> tasks = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            tasks.add(new Task("Accepted"));
+        }
+        for (int i = 0; i < 5; i++) {
+            tasks.add(new Task("No"));
+        }
 
         for (Task task : tasks) {
             if (task.getStatus().equals("Accepted")) {
@@ -126,9 +134,5 @@ public class EmployeeGUI extends JFrame {
 
     private void showFeedback(int taskId) {
         // Implement feedback viewing logic here
-    }
-
-    public static void main(String[] args) {
-        new EmployeeGUI("ryanPark");
     }
 }
