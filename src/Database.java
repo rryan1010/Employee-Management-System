@@ -197,7 +197,7 @@ public class Database {
     }
     
 
-    public static boolean createTask(String title, String description, String status, String assignedTo, String manager, String feedback) {
+    public static boolean createTaskDB(String title, String description, String status, String assignedTo, String manager, String feedback) {
         String sql = "INSERT INTO task (title, description, status, assigned_to, manager, feedback) VALUES (?, ?, 'Assigned', ?, ?, ?)";
         try (Connection connection = DriverManager.getConnection(url);
              PreparedStatement statement = connection.prepareStatement(sql)) {

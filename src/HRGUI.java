@@ -17,7 +17,7 @@ public class HRGUI extends JFrame {
     private JLabel nameLabel, roleLabel, departmentLabel, jobTitleLabel;
 
     // Task Creation Components
-    private JTextField titleField, descriptionField, feedbackField;
+    private JTextField titleField, descriptionField, statusField, feedbackField;
     private JComboBox<String> assignedToDropdown, managerDropdown;
     private JButton createTaskButton;
 
@@ -71,6 +71,7 @@ public class HRGUI extends JFrame {
 
         titleField = new JTextField(20);
         descriptionField = new JTextField(20);
+        statusField = new JTextField(20);
         feedbackField = new JTextField(20);
         createTaskButton = new JButton("Create Task");
         createTaskButton.addActionListener(this::createTask);
@@ -84,6 +85,8 @@ public class HRGUI extends JFrame {
         taskCreationPanel.add(titleField);
         taskCreationPanel.add(new JLabel("Description:"));
         taskCreationPanel.add(descriptionField);
+        taskCreationPanel.add(new JLabel("Status:"));
+        taskCreationPanel.add(statusField);
         taskCreationPanel.add(new JLabel("Assigned To:"));
         taskCreationPanel.add(assignedToDropdown);
         taskCreationPanel.add(new JLabel("Manager:"));
@@ -132,15 +135,17 @@ public class HRGUI extends JFrame {
     private void createTask(ActionEvent e) {
         if (titleField.getText().isEmpty() ||
             descriptionField.getText().isEmpty() ||
+            statusField.getText().isEmpty() ||
             assignedToDropdown.getSelectedItem() == null ||
             managerDropdown.getSelectedItem() == null) {
             JOptionPane.showMessageDialog(this, "All fields must be filled out.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
         
-        boolean success = Database.createTask(
+        boolean success = Database.createTaskDB(
             titleField.getText(), 
             descriptionField.getText(), 
+            statusField.getText(),
             assignedToDropdown.getSelectedItem().toString(), 
             managerDropdown.getSelectedItem().toString(), 
             feedbackField.getText()
