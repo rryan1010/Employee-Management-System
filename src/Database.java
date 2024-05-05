@@ -39,11 +39,9 @@ public class Database {
                 + "description TEXT NOT NULL,"
                 + "status TEXT NOT NULL CHECK(status IN ('Assigned', 'Accepted', 'Rejected', 'Completed')),"
                 + "assigned_to TEXT,"
-                + "assigned_by TEXT,"
                 + "manager TEXT,"
                 + "feedback TEXT,"
                 + "FOREIGN KEY (assigned_to) REFERENCES user (username),"
-                + "FOREIGN KEY (assigned_by) REFERENCES user (username),"
                 + "FOREIGN KEY (manager) REFERENCES user (username))";
         connect(sql);
     }
@@ -197,8 +195,8 @@ public class Database {
     }
     
 
-    public static void createTask(String title, String description, String status, String assignedTo, String assignedBy, String manager, String feedback) {
-        String sql = "INSERT INTO task (title, description, status, assigned_to, assgined_by, manager, feedback) VALUES (?, ?, ?, ?, ?, ?, ?)";
+    public static void createTask(String title, String description, String status, String assignedTo, String manager, String feedback) {
+        String sql = "INSERT INTO task (title, description, status, assigned_to, manager, feedback) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (
                 Connection connection = DriverManager.getConnection(url);
@@ -206,10 +204,9 @@ public class Database {
             statement.setString(1, title);
             statement.setString(2, description);
             statement.setString(3, status);
-            statement.setString(5, assignedTo);
-            statement.setString(6, assignedBy);
-            statement.setString(7, manager);
-            statement.setString(4, feedback);
+            statement.setString(4, assignedTo);
+            statement.setString(5, manager);
+            statement.setString(6, feedback);
 
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
@@ -306,15 +303,33 @@ public class Database {
                     String description = resultSet.getString("description");
                     String status = resultSet.getString("status");
                     String assignedTo = resultSet.getString("assignedTo");
-                    String assignedBy = resultSet.getString("assignedBy");
                     String manager = resultSet.getString("manager");
                     String feedback = resultSet.getString("feedback");
-                    tasks.add(new Task(id, title, description, status, assignedTo, assignedBy, manager, feedback));
+                    tasks.add(new Task(id, title, description, status, assignedTo, manager, feedback));
                 }
             }
         } catch (SQLException e) {
             System.err.println("Error retrieving data: " + e.getMessage());
         }
         return tasks;
+    }
+
+    public static boolean isEmployee(String username) {
+        String sql = "SELECT * FROM user WHERE username = ? AND role IN ('Employee', 'Manager')";
+
+        try (
+                Connection connection = DriverManager.getConnection(url);
+                PreparedStatement statement = connection.prepareStatement(sql);) {
+            statement.setString(1, username);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    return true;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving data: " + e.getMessage());
+        }
+        return false;
     }
 }

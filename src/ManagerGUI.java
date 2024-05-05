@@ -73,7 +73,7 @@ public class ManagerGUI extends JFrame {
         List<Task> tasks = Database.getTasks(user.getUsername());
 
         for (int i = 0; i < 15; i++) {
-            tasks.add(new Task(i, "title", "desc", "Assigned", "Taiwo", "HR", "Kehinde", "Feedback"));
+            tasks.add(new Task(i, "title", "desc", "Assigned", "Taiwo", "Kehinde", "Feedback"));
         }
         for (int i = 0; i < 5; i++) {
             tasks.get(i).setStatus("Accepted");
@@ -98,7 +98,7 @@ public class ManagerGUI extends JFrame {
         taskPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
         taskPanel.add(new JLabel("Title: " + task.getTitle()));
-        taskPanel.add(new JLabel("Assigned By: " + task.getAssignedBy()));
+        taskPanel.add(new JLabel("Assigned By: " + "HR"));
 
         if (isAccepted) {
             JButton completeButton = new JButton("Complete");
@@ -115,7 +115,19 @@ public class ManagerGUI extends JFrame {
             taskPanel.add(completeButton);
         } else if (task.getManager().equals(user.getUsername())) {
             taskPanel.add(new JLabel("Employee: "));
-            // JTextField 
+            JTextField employeeName = new JTextField(20);
+            JButton assignButton = new JButton("Assign");
+            assignButton.addActionListener(e -> {
+                if (assignTask(task, employeeName.getText())) {
+                    taskPanel.remove(employeeName);
+                    taskPanel.remove(assignButton);
+                    taskPanel.add(new JLabel(employeeName.getText()));
+                    taskPanel.revalidate();
+                    taskPanel.repaint();
+                }
+            });
+            taskPanel.add(employeeName);
+            taskPanel.add(assignButton);
         } else {
             JButton acceptButton = new JButton("Accept");
             JButton rejectButton = new JButton("Reject");
@@ -148,5 +160,21 @@ public class ManagerGUI extends JFrame {
 
     private void showFeedback(String feedback) {
         JOptionPane.showMessageDialog(this, feedback);
+    }
+
+    private boolean assignTask(Task task, String username) {
+        if (username.isBlank()) {
+            JOptionPane.showMessageDialog(this, "Employee cannot be empty!");
+            return false;
+        }
+
+        if (Database.isEmployee(username)) {
+            Database.createTask(task.getTitle(), task.getDescription(), task.getStatus(), 
+                username, user.getUsername(), "");
+            return true;
+        }
+
+        JOptionPane.showMessageDialog(this, "Employee does not exist!");
+        return false;
     }
 }

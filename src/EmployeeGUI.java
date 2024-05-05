@@ -76,7 +76,7 @@ public class EmployeeGUI extends JFrame {
         taskPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
         taskPanel.add(new JLabel("Title: " + task.getTitle()));
-        taskPanel.add(new JLabel("Assigned By: " + task.getAssignedBy()));
+        taskPanel.add(new JLabel("Assigned By: " + task.getManager()));
 
         if (isAccepted) {
             JButton completeButton = new JButton("Complete");

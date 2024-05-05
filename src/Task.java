@@ -6,18 +6,16 @@ public class Task {
     private String description;
     private String status;
     private String assignedTo;
-    private String assignedBy;
     private String manager;
     private String feedback;
 
     // Constructor
-    public Task(int taskId, String title, String description, String status, String assignedTo, String assignedBy, String manager, String feedback) {
+    public Task(int taskId, String title, String description, String status, String assignedTo, String manager, String feedback) {
         this.taskId = taskId;
         this.title = title;
         this.description = description;
         this.status = status;
         this.assignedTo = assignedTo;
-        this.assignedBy = assignedBy;
         this.manager = manager;
         this.feedback = feedback;
     }
@@ -63,14 +61,6 @@ public class Task {
         this.assignedTo = assignedTo;
     }
 
-    public String getAssignedBy() {
-        return assignedBy;
-    }
-
-    public void setAssignedBy(String assignedBy) {
-        this.assignedBy = assignedBy;
-    }
-
     public String getManager() {
         return manager;
     }
@@ -95,7 +85,6 @@ public class Task {
                ", description='" + description + '\'' +
                ", status='" + status + '\'' +
                ", assignedTo=" + assignedTo +
-               ", assignedBy=" + assignedBy +
                ", feedback='" + feedback + '\'' +
                '}';
     }
