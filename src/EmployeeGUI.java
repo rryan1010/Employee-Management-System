@@ -88,7 +88,7 @@ public class EmployeeGUI extends JFrame {
                 panel.repaint();
             });
             JButton feedbackButton = new JButton("Feedback");
-            feedbackButton.addActionListener(e -> showFeedback(task.getTaskId()));
+            feedbackButton.addActionListener(e -> showFeedback(task.getFeedback()));
 
             taskPanel.add(feedbackButton);
             taskPanel.add(completeButton);
@@ -119,10 +119,10 @@ public class EmployeeGUI extends JFrame {
     }
 
     private void updateTaskStatus(int taskId, String status) {
-        // Implement task status update logic here
+        Database.updateTaskStatus(taskId, status);
     }
 
-    private void showFeedback(int taskId) {
-        // Implement feedback viewing logic here
+    private void showFeedback(String feedback) {
+        JOptionPane.showMessageDialog(this, feedback);
     }
 }
