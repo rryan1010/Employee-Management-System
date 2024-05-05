@@ -304,7 +304,7 @@ public class Database {
                     String title = resultSet.getString("title");
                     String description = resultSet.getString("description");
                     String status = resultSet.getString("status");
-                    String assignedTo = resultSet.getString("assignedTo");
+                    String assignedTo = resultSet.getString("assigned_to");
                     String manager = resultSet.getString("manager");
                     String feedback = resultSet.getString("feedback");
                     tasks.add(new Task(id, title, description, status, assignedTo, manager, feedback));
@@ -331,7 +331,7 @@ public class Database {
                     String title = resultSet.getString("title");
                     String description = resultSet.getString("description");
                     String status = resultSet.getString("status");
-                    String assignedTo = resultSet.getString("assignedTo");
+                    String assignedTo = resultSet.getString("assigned_to");
                     String manager = resultSet.getString("manager");
                     String feedback = resultSet.getString("feedback");
                     tasks.add(new Task(id, title, description, status, assignedTo, manager, feedback));

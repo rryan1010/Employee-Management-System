@@ -70,7 +70,8 @@ public class ManagerGUI extends JFrame {
     }
 
     private void loadTasks() {
-        List<Task> tasks = Database.getEmployeeTasks(user.getUsername());
+        List<Task> tasks = Database.getManagerTasks(user.getUsername());
+        tasks.addAll(Database.getEmployeeTasks(user.getUsername()));
 
         for (Task task : tasks) {
             if (task.getStatus().equals("Accepted")) {
