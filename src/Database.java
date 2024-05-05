@@ -354,11 +354,7 @@ public class Database {
         }
     }
 
-    
-
-
     // Talk about this with Taiwo and Ryan again
-    
     public static Object[][] getAllTasks() {
         String sql = "SELECT * FROM task";
         List<Object[]> taskList = new ArrayList<>();
@@ -383,6 +379,4 @@ public class Database {
 
         return taskList.toArray(new Object[0][]);
     }
-    
-
 }
