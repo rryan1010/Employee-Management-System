@@ -134,22 +134,21 @@ public class HRGUI extends JFrame {
 
     private void createTask(ActionEvent e) {
         if (titleField.getText().isEmpty() ||
-            descriptionField.getText().isEmpty() ||
-            statusField.getText().isEmpty() ||
-            assignedToDropdown.getSelectedItem() == null ||
-            managerDropdown.getSelectedItem() == null) {
+                descriptionField.getText().isEmpty() ||
+                statusField.getText().isEmpty() ||
+                assignedToDropdown.getSelectedItem() == null ||
+                managerDropdown.getSelectedItem() == null) {
             JOptionPane.showMessageDialog(this, "All fields must be filled out.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        
+
         boolean success = Database.createTaskDB(
-            titleField.getText(), 
-            descriptionField.getText(), 
-            statusField.getText(),
-            assignedToDropdown.getSelectedItem().toString(), 
-            managerDropdown.getSelectedItem().toString(), 
-            feedbackField.getText()
-        );
+                titleField.getText(),
+                descriptionField.getText(),
+                statusField.getText(),
+                assignedToDropdown.getSelectedItem().toString(),
+                managerDropdown.getSelectedItem().toString(),
+                feedbackField.getText());
 
         if (success) {
             JOptionPane.showMessageDialog(this, "Task created successfully!");
@@ -161,12 +160,14 @@ public class HRGUI extends JFrame {
 
     private void refreshTaskTable() {
         Object[][] data = Database.getAllTasks();
-        DefaultTableModel model = new DefaultTableModel(data, new String[] {"Task ID", "Title", "Description", "Status", "Assigned To", "Manager"});
+        DefaultTableModel model = new DefaultTableModel(data,
+                new String[] { "Task ID", "Title", "Description", "Status", "Assigned To", "Manager" });
         tasksTable.setModel(model);
     }
 
     public static void main(String[] args) {
-        User user = new User("Taiwo Oso", "password", "Manager", "Taiwo", "Oso", "CS Department", "Software Engineer", "taiwo@example.com");
+        User user = new User("Taiwo Oso", "password", "Manager", "Taiwo", "Oso", "CS Department", "Software Engineer",
+                "taiwo@example.com");
         new HRGUI(user);
     }
 }

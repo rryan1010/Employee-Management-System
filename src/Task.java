@@ -10,7 +10,8 @@ public class Task {
     private String feedback;
 
     // Constructor
-    public Task(int taskId, String title, String description, String status, String assignedTo, String manager, String feedback) {
+    public Task(int taskId, String title, String description, String status, String assignedTo, String manager,
+            String feedback) {
         this.taskId = taskId;
         this.title = title;
         this.description = description;
@@ -80,12 +81,12 @@ public class Task {
     @Override
     public String toString() {
         return "Task{" +
-               "taskId=" + taskId +
-               ", title='" + title + '\'' +
-               ", description='" + description + '\'' +
-               ", status='" + status + '\'' +
-               ", assignedTo=" + assignedTo +
-               ", feedback='" + feedback + '\'' +
-               '}';
+                "taskId=" + taskId +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                ", status='" + status + '\'' +
+                ", assignedTo=" + assignedTo +
+                ", feedback='" + feedback + '\'' +
+                '}';
     }
 }
