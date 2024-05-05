@@ -196,6 +196,24 @@ public class Database {
         }
     }
 
+    // Method to update description for a task
+    public static void updateTaskDescription(int taskId, String newDesription) {
+        String sql = "UPDATE task SET description = ? WHERE task_id = ?";
+        try (Connection connection = DriverManager.getConnection(url);
+                PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, newDesription);
+            statement.setInt(2, taskId);
+            int rowsUpdated = statement.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("Task description updated successfully!");
+            } else {
+                System.out.println("No description was updated.");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error updating task description: " + e.getMessage());
+        }
+    }
+
     public static List<Task> getTasks(String username) {
         List<Task> tasks = new ArrayList<>();
         String sql = "SELECT * FROM task WHERE LOWER(assigned_to) = LOWER(?)";
