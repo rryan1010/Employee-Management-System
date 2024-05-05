@@ -160,6 +160,28 @@ public class Database {
         return false;
     }
 
+    public static void createTask(String title, String description, String status, String assignedTo, String assignedBy, String feedback) {
+        String sql = "INSERT INTO task (title, description, status, feedback, assigned_to, assgind_by) VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (
+                Connection connection = DriverManager.getConnection(url);
+                PreparedStatement statement = connection.prepareStatement(sql);) {
+            statement.setString(1, title);
+            statement.setString(2, description);
+            statement.setString(3, status);
+            statement.setString(4, feedback);
+            statement.setString(5, assignedTo);
+            statement.setString(6, assignedBy);
+
+            int rowsInserted = statement.executeUpdate();
+            if (rowsInserted > 0) {
+                System.out.println("Task created successfully!");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error inserting data: " + e.getMessage());
+        }
+    }
+
     // Method to update task status
     public static void updateTaskStatus(int taskId, String newStatus) {
         String sql = "UPDATE task SET status = ? WHERE task_id = ?";
