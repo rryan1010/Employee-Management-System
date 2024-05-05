@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.List;
-import java.util.ArrayList;
 
 public class EmployeeGUI extends JFrame {
     private JPanel mainPanel;
@@ -62,14 +61,7 @@ public class EmployeeGUI extends JFrame {
     }
 
     private void loadTasks() {
-        // Mockup method to return a list of tasks
-        List<Task> tasks = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            tasks.add(new Task(i, "title", "description", "Not Accepted", "Taiwo", "Admin", getName()));
-        }
-        for (int i = 0; i < 10; i+=2) {
-            tasks.get(i).setStatus("Accepted");
-        }
+        List<Task> tasks = Database.getTasks(user.getUsername());
 
         for (Task task : tasks) {
             if (task.getStatus().equals("Accepted")) {
@@ -84,7 +76,7 @@ public class EmployeeGUI extends JFrame {
         JPanel taskPanel = new JPanel();
         taskPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
-        taskPanel.add(new JLabel("Task ID: " + task.getTaskId()));
+        taskPanel.add(new JLabel("Title: " + task.getTitle()));
         taskPanel.add(new JLabel("Assigned By: " + task.getAssignedBy()));
 
         if (isAccepted) {
