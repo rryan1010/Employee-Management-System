@@ -73,7 +73,8 @@ public class ManagerGUI extends JFrame {
         List<Task> tasks = Database.getTasks(user.getUsername());
 
         for (int i = 0; i < 15; i++) {
-            tasks.add(new Task(i, getTitle(), getName(), getName(), getName(), getTitle(), getWarningString(), getName()));
+            tasks.add(new Task(i, getTitle(), getName(), getName(), getName(), getTitle(), getWarningString(),
+                    getName()));
         }
 
         for (Task task : tasks) {
