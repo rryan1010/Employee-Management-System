@@ -60,7 +60,7 @@ public class EmployeeGUI extends JFrame {
     }
 
     private void loadTasks() {
-        List<Task> tasks = Database.getTasks(user.getUsername());
+        List<Task> tasks = Database.getEmployeeTasks(user.getUsername());
 
         for (Task task : tasks) {
             if (task.getStatus().equals("Accepted")) {
