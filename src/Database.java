@@ -197,28 +197,26 @@ public class Database {
     }
     
 
-    public static void createTask(String title, String description, String status, String assignedTo, String assignedBy, String manager, String feedback) {
-        String sql = "INSERT INTO task (title, description, status, assigned_to, assgined_by, manager, feedback) VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-        try (
-                Connection connection = DriverManager.getConnection(url);
-                PreparedStatement statement = connection.prepareStatement(sql);) {
+    public static boolean createTask(String title, String description, String assignedTo, String manager, String feedback) {
+        String sql = "INSERT INTO task (title, description, status, assigned_to, manager, feedback) VALUES (?, ?, 'Assigned', ?, ?, ?)";
+        try (Connection connection = DriverManager.getConnection(url);
+             PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, title);
             statement.setString(2, description);
-            statement.setString(3, status);
-            statement.setString(5, assignedTo);
-            statement.setString(6, assignedBy);
-            statement.setString(7, manager);
-            statement.setString(4, feedback);
-
+            statement.setString(3, assignedTo);
+            statement.setString(4, manager);
+            statement.setString(5, feedback);
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
                 System.out.println("Task created successfully!");
+                return true;
             }
         } catch (SQLException e) {
-            System.err.println("Error inserting data: " + e.getMessage());
+            System.err.println("Error inserting task: " + e.getMessage());
         }
+        return false;
     }
+    
 
     public static void promoteEmployee(String username) {
         String sql = "UPDATE user SET role = Manager WHERE username = ?";
@@ -362,8 +360,7 @@ public class Database {
         }
     }
 
-    // Talk about this with Taiwo and Ryan again
-    
+    //
     public static Object[][] getAllTasks() {
         String sql = "SELECT task_id, title, description, status, assigned_to, manager FROM task";
         List<Object[]> taskList = new ArrayList<>();
@@ -388,6 +385,22 @@ public class Database {
 
         return taskList.toArray(new Object[0][]);
     }
+
+    public static List<String> getEmployeeUsernames() {
+        List<String> usernames = new ArrayList<>();
+        String sql = "SELECT username FROM user WHERE role != 'HR'";
+        try (Connection connection = DriverManager.getConnection(url);
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+            while (resultSet.next()) {
+                usernames.add(resultSet.getString("username"));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error fetching usernames: " + e.getMessage());
+        }
+        return usernames;
+    }
+    
     
 
 }
