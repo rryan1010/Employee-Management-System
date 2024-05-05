@@ -73,12 +73,20 @@ public class ManagerGUI extends JFrame {
         List<Task> tasks = Database.getTasks(user.getUsername());
 
         for (int i = 0; i < 15; i++) {
-            tasks.add(new Task(i, getTitle(), getName(), getName(), getName(), getTitle(), getWarningString(), getName()));
+            tasks.add(new Task(i, "title", "desc", "Assigned", "Taiwo", "HR", "Kehinde", "Feedback"));
+        }
+        for (int i = 0; i < 5; i++) {
+            tasks.get(i).setStatus("Accepted");
+        }
+        for (int i = 5; i < 10; i++) {
+            tasks.get(i).setManager(user.getUsername());
         }
 
         for (Task task : tasks) {
             if (task.getStatus().equals("Accepted")) {
                 addTaskToPanel(task, acceptedTasksPanel, true);
+            } else if (task.getManager().equals(user.getUsername())) {
+                addTaskToPanel(task, managerTasksPanel, false);
             } else {
                 addTaskToPanel(task, incomingTasksPanel, false);
             }
@@ -105,6 +113,9 @@ public class ManagerGUI extends JFrame {
 
             taskPanel.add(feedbackButton);
             taskPanel.add(completeButton);
+        } else if (task.getManager().equals(user.getUsername())) {
+            taskPanel.add(new JLabel("Employee: "));
+            // JTextField 
         } else {
             JButton acceptButton = new JButton("Accept");
             JButton rejectButton = new JButton("Reject");
