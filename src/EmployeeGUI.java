@@ -52,7 +52,7 @@ public class EmployeeGUI extends JFrame {
         profilePanel.setLayout(new BoxLayout(profilePanel, BoxLayout.Y_AXIS));
         profilePanel.setBorder(BorderFactory.createTitledBorder("Profile Details"));
 
-        profilePanel.add(new JLabel("Name: " + user.getFirstName()+" "+user.getLastName()));
+        profilePanel.add(new JLabel("Name: " + user.getFirstName() + " " + user.getLastName()));
         profilePanel.add(new JLabel("Department: " + user.getDepartment()));
         profilePanel.add(new JLabel("Role: " + user.getRole()));
         profilePanel.add(new JLabel("Job Title: " + user.getJobTitle()));

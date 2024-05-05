@@ -159,6 +159,39 @@ public class Database {
         }
         return false;
     }
+    // 
+    public static boolean updateEmployee(String username, String firstName, String lastName, String role, String department, String jobTitle, String email) {
+        if (!userExists(username)) {
+            System.out.println("User does not exist.");
+            return false;
+        }
+    
+        String sql = "UPDATE user SET first_name = ?, last_name = ?, role = ?, department = ?, job_title = ?, email = ? WHERE username = ?";
+    
+        try (Connection connection = DriverManager.getConnection(url);
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, firstName);
+            statement.setString(2, lastName);
+            statement.setString(3, role);
+            statement.setString(4, department);
+            statement.setString(5, jobTitle);
+            statement.setString(6, email);
+            statement.setString(7, username);
+    
+            int rowsUpdated = statement.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("User updated successfully!");
+                return true;
+            } else {
+                System.out.println("No user was updated.");
+                return false;
+            }
+        } catch (SQLException e) {
+            System.err.println("Error updating user: " + e.getMessage());
+            return false;
+        }
+    }
+    
 
     public static void createTask(String title, String description, String status, String assignedTo, String assignedBy, String feedback) {
         String sql = "INSERT INTO task (title, description, status, feedback, assigned_to, assgind_by) VALUES (?, ?, ?, ?, ?, ?)";
@@ -215,6 +248,24 @@ public class Database {
             }
         } catch (SQLException e) {
             System.err.println("Error updating task feedback: " + e.getMessage());
+        }
+    }
+
+    // Method to update description for a task
+    public static void updateTaskDescription(int taskId, String newDesription) {
+        String sql = "UPDATE task SET description = ? WHERE task_id = ?";
+        try (Connection connection = DriverManager.getConnection(url);
+                PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, newDesription);
+            statement.setInt(2, taskId);
+            int rowsUpdated = statement.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("Task description updated successfully!");
+            } else {
+                System.out.println("No description was updated.");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error updating task description: " + e.getMessage());
         }
     }
 

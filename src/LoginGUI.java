@@ -94,13 +94,14 @@ public class LoginGUI extends JFrame implements ActionListener {
             return;
         }
 
-        if (user.getRole().equals("Employee")) {
+        String role = user.getRole();
+        if (role.equals("Employee")) {
             dispose();
             new EmployeeGUI(user);
-        } else if (user.getRole().equals("Manager")) {
+        } else if (role.equals("Manager")) {
             dispose();
             // new ManagerGUI(user);
-        } else if (user.getRole().equals("HR")) {
+        } else if (role.equals("HR")) {
             dispose();
             // new HRGUI(user);
         }
