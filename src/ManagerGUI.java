@@ -160,7 +160,7 @@ public class ManagerGUI extends JFrame {
         }
 
         if (Database.isEmployee(username)) {
-            Database.createTask(task.getTitle(), task.getDescription(), task.getStatus(),
+            Database.createTaskDB(task.getTitle(), task.getDescription(), task.getStatus(),
                     username, user.getUsername(), "");
             return true;
         }
