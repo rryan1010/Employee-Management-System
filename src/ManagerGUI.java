@@ -117,6 +117,13 @@ public class ManagerGUI extends JFrame {
                     taskPanel.repaint();
                 }
             });
+            // check if task has already been assigned
+            // if (task.getAssignedTo() != null && !task.getAssignedTo().isBlank()) {
+
+            // } else {
+            //     taskPanel.add(employeeName);
+            //     taskPanel.add(assignButton);
+            // }
             taskPanel.add(employeeName);
             taskPanel.add(assignButton);
         } else {
