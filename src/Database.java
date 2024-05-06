@@ -23,7 +23,7 @@ public class Database {
                 + "user_id INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + "username TEXT NOT NULL UNIQUE,"
                 + "password TEXT NOT NULL,"
-                + "role TEXT NOT NULL CHECK(role IN ('Employee', 'Manager', 'HR')),"
+                + "role TEXT NOT NULL CHECK(role IN ('Employee', 'HR')),"
                 + "first_name TEXT NOT NULL,"
                 + "last_name TEXT NOT NULL,"
                 + "department TEXT,"
@@ -479,14 +479,18 @@ public class Database {
 
     public static Object[][] getAllEmployees() {
         List<Object[]> list = new ArrayList<>();
-        String sql = "SELECT username, first_name, last_name, email, role, department, job_title FROM user WHERE role != 'HR'";  // Exclude HR from the list
-    
+        String sql = "SELECT username, first_name, last_name, email, role, department, job_title FROM user WHERE role != 'HR'"; // Exclude
+                                                                                                                                // HR
+                                                                                                                                // from
+                                                                                                                                // the
+                                                                                                                                // list
+
         try (Connection connection = DriverManager.getConnection(url);
-             PreparedStatement statement = connection.prepareStatement(sql);
-             ResultSet resultSet = statement.executeQuery()) {
-    
+                PreparedStatement statement = connection.prepareStatement(sql);
+                ResultSet resultSet = statement.executeQuery()) {
+
             while (resultSet.next()) {
-                Object[] row = new Object[7];  // Create an array to hold the data for one row
+                Object[] row = new Object[7]; // Create an array to hold the data for one row
                 row[0] = resultSet.getString("username");
                 row[1] = resultSet.getString("first_name");
                 row[2] = resultSet.getString("last_name");
@@ -494,15 +498,14 @@ public class Database {
                 row[4] = resultSet.getString("role");
                 row[5] = resultSet.getString("department");
                 row[6] = resultSet.getString("job_title");
-                list.add(row);  // Add the row to the list
+                list.add(row); // Add the row to the list
             }
         } catch (SQLException e) {
             System.err.println("Error retrieving employee data: " + e.getMessage());
         }
-    
+
         // Convert the list of Object arrays to a 2D Object array
         return list.toArray(new Object[0][]);
     }
-    
 
 }
