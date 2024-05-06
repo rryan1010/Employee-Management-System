@@ -43,7 +43,7 @@ public class HRGUI extends JFrame {
         setupTaskCreationPanel();
 
         populateUserDropdowns();
-        
+
         setupTaskListPanel();
         setupEmployeeTable();
 
@@ -138,18 +138,22 @@ public class HRGUI extends JFrame {
     }
 
     private void setupEmployeeTable() {
-        String[] columnNames = {"Username", "First Name", "Last Name", "Email", "Role", "Department", "Job Title"};  // These are the column headers
-        Object[][] data = {};  // Initial empty data
-    
+        String[] columnNames = { "Username", "First Name", "Last Name", "Email", "Role", "Department", "Job Title" }; // These
+                                                                                                                      // are
+                                                                                                                      // the
+                                                                                                                      // column
+                                                                                                                      // headers
+        Object[][] data = {}; // Initial empty data
+
         // Initialize the table with data and column names
         employeesTable = new JTable(new DefaultTableModel(data, columnNames));
-        JScrollPane scrollPane = new JScrollPane(employeesTable);  // Enable scrolling
+        JScrollPane scrollPane = new JScrollPane(employeesTable); // Enable scrolling
         employeesTable.setFillsViewportHeight(true);
-    
-        // You can add the scrollPane to a panel or directly to the mainPanel, depending on your layout
-        mainPanel.add(scrollPane, BorderLayout.EAST);  // Adjust layout as necessary
+
+        // You can add the scrollPane to a panel or directly to the mainPanel, depending
+        // on your layout
+        mainPanel.add(scrollPane, BorderLayout.EAST); // Adjust layout as necessary
     }
-    
 
     private void createTask(ActionEvent e) {
         if (titleField.getText().isEmpty() ||
@@ -186,7 +190,7 @@ public class HRGUI extends JFrame {
             JOptionPane.showMessageDialog(this, "Failed to delete employee.", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
-    
+
     private void editEmployeeDetails(ActionEvent e) {
         String username = (String) usernameDropdown.getSelectedItem();
         if (username != null) {
@@ -197,14 +201,14 @@ public class HRGUI extends JFrame {
                 String newRole = JOptionPane.showInputDialog("Enter new role for " + username);
                 if (newRole != null && !newRole.isEmpty()) {
                     boolean success = Database.updateEmployee(
-                        username, user.getFirstName(), user.getLastName(), newRole,
-                        user.getDepartment(), user.getJobTitle(), user.getEmail()
-                    );
+                            username, user.getFirstName(), user.getLastName(), newRole,
+                            user.getDepartment(), user.getJobTitle(), user.getEmail());
                     if (success) {
                         JOptionPane.showMessageDialog(this, "Employee details updated successfully.");
                         refreshEmployeeTable();
                     } else {
-                        JOptionPane.showMessageDialog(this, "Failed to update employee details.", "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(this, "Failed to update employee details.", "Error",
+                                JOptionPane.ERROR_MESSAGE);
                     }
                 }
             } else {
@@ -212,7 +216,6 @@ public class HRGUI extends JFrame {
             }
         }
     }
-    
 
     private void populateUserDropdowns() {
         List<String> usernames = Database.getEmployeeUsernames(); // Fetch usernames from database
@@ -223,7 +226,8 @@ public class HRGUI extends JFrame {
 
     private void refreshTaskTable() {
         Object[][] data = Database.getAllTasks();
-        DefaultTableModel model = new DefaultTableModel(data, new String[] { "Task ID", "Title", "Description", "Status", "Assigned To", "Manager" });
+        DefaultTableModel model = new DefaultTableModel(data,
+                new String[] { "Task ID", "Title", "Description", "Status", "Assigned To", "Manager" });
         tasksTable.setModel(model);
         tasksTable.revalidate();
     }
@@ -231,13 +235,12 @@ public class HRGUI extends JFrame {
     private void refreshEmployeeTable() {
         // Fetch the latest employee data from the database
         Object[][] data = Database.getAllEmployees(); // You need to implement this method in the Database class
-        String[] columnNames = {"Username", "First Name", "Last Name", "Email", "Role", "Department", "Job Title"}; // Adjust column names as needed
+        String[] columnNames = { "Username", "First Name", "Last Name", "Email", "Role", "Department", "Job Title" };
         // Create a new table model with the fetched data
         DefaultTableModel model = new DefaultTableModel(data, columnNames);
         employeesTable.setModel(model);
-        employeesTable.revalidate(); 
+        employeesTable.revalidate();
     }
-    
 
     public static void main(String[] args) {
         User user = new User("Taiwo Oso", "password", "Manager", "Taiwo", "Oso", "CS Department", "Software Engineer",
