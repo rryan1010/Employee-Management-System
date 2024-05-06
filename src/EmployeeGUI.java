@@ -91,6 +91,8 @@ public class EmployeeGUI extends JFrame {
         for (Task task : tasks) {
             if (task.getStatus().equals("Accepted")) {
                 addTaskToPanel(task, acceptedTasksPanel, true);
+            } else if (task.getManager().equals(user.getUsername())) {
+                addTaskToPanel(task, managerTasksPanel, false);
             } else {
                 addTaskToPanel(task, incomingTasksPanel, false);
             }
