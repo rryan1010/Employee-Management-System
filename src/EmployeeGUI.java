@@ -7,9 +7,11 @@ import java.util.List;
 public class EmployeeGUI extends JFrame {
     private JPanel mainPanel;
     private JPanel profilePanel;
+    private JPanel managerTasksPanel;
     private JPanel acceptedTasksPanel;
     private JPanel incomingTasksPanel;
     private User user;
+    private boolean isManager = false;
 
     public EmployeeGUI(User user) {
         this.user = user;
@@ -25,6 +27,12 @@ public class EmployeeGUI extends JFrame {
         loadProfile();
 
         // Initialize task panels
+        JPanel tempPanel = new JPanel(new BorderLayout());
+
+        managerTasksPanel = new JPanel();
+        managerTasksPanel.setLayout(new BoxLayout(managerTasksPanel, BoxLayout.Y_AXIS));
+        managerTasksPanel.setBorder(BorderFactory.createTitledBorder("Manager"));
+
         acceptedTasksPanel = new JPanel();
         acceptedTasksPanel.setLayout(new BoxLayout(acceptedTasksPanel, BoxLayout.Y_AXIS));
         acceptedTasksPanel.setBorder(BorderFactory.createTitledBorder("Accepted Tasks"));
@@ -36,8 +44,16 @@ public class EmployeeGUI extends JFrame {
         // Load tasks
         loadTasks();
 
-        mainPanel.add(new JScrollPane(acceptedTasksPanel), BorderLayout.CENTER);
-        mainPanel.add(new JScrollPane(incomingTasksPanel), BorderLayout.SOUTH);
+        if (isManager) {
+            tempPanel.add(new JScrollPane(managerTasksPanel), BorderLayout.NORTH);
+            tempPanel.add(new JScrollPane(acceptedTasksPanel), BorderLayout.SOUTH);
+    
+            mainPanel.add(new JScrollPane(tempPanel), BorderLayout.CENTER);
+            mainPanel.add(new JScrollPane(incomingTasksPanel), BorderLayout.SOUTH);
+        } else {
+            mainPanel.add(new JScrollPane(acceptedTasksPanel), BorderLayout.CENTER);
+            mainPanel.add(new JScrollPane(incomingTasksPanel), BorderLayout.SOUTH);
+        }
 
         // Setting custom logo
         ImageIcon icon = new ImageIcon("images/logo.png");
@@ -68,11 +84,15 @@ public class EmployeeGUI extends JFrame {
     }
 
     private void loadTasks() {
-        List<Task> tasks = Database.getEmployeeTasks(user.getUsername());
+        List<Task> tasks = Database.getManagerTasks(user.getUsername());
+        if (tasks.size() > 0) isManager = true;
+        tasks.addAll(Database.getEmployeeTasks(user.getUsername()));
 
         for (Task task : tasks) {
             if (task.getStatus().equals("Accepted")) {
                 addTaskToPanel(task, acceptedTasksPanel, true);
+            } else if (task.getManager().equals(user.getUsername())) {
+                addTaskToPanel(task, managerTasksPanel, false);
             } else {
                 addTaskToPanel(task, incomingTasksPanel, false);
             }
@@ -84,12 +104,12 @@ public class EmployeeGUI extends JFrame {
         taskPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
         taskPanel.add(new JLabel("Title: " + task.getTitle()));
-        taskPanel.add(new JLabel("Assigned By: " + task.getManager()));
+        taskPanel.add(new JLabel("Assigned By: " + "HR"));
 
         if (isAccepted) {
             JButton completeButton = new JButton("Complete");
             completeButton.addActionListener(e -> {
-                updateTaskStatus(task.getTaskId(), "Completed");
+                deleteTask(task.getTaskId());
                 panel.remove(taskPanel);
                 panel.revalidate();
                 panel.repaint();
@@ -99,6 +119,17 @@ public class EmployeeGUI extends JFrame {
 
             taskPanel.add(feedbackButton);
             taskPanel.add(completeButton);
+        } else if (task.getManager().equals(user.getUsername())) {
+            JButton editButton = new JButton("Edit");
+            editButton.addActionListener(e -> {
+                editTask(task);
+            });
+            String assignedTo = task.getAssignedTo();
+            if (assignedTo == null || assignedTo.isBlank()) {
+                assignedTo = "N/A";
+            }
+            taskPanel.add(new JLabel("Assigned To: " + assignedTo));
+            taskPanel.add(editButton);
         } else {
             JButton acceptButton = new JButton("Accept");
             JButton rejectButton = new JButton("Reject");
@@ -110,19 +141,24 @@ public class EmployeeGUI extends JFrame {
                 acceptedTasksPanel.repaint();
                 panel.revalidate();
                 panel.repaint();
+                mainPanel.revalidate();
+                mainPanel.repaint();
             });
             rejectButton.addActionListener(e -> {
-                updateTaskStatus(task.getTaskId(), "Rejected");
+                deleteTask(task.getTaskId());
                 panel.remove(taskPanel);
                 panel.revalidate();
                 panel.repaint();
             });
-
             taskPanel.add(acceptButton);
             taskPanel.add(rejectButton);
         }
 
         panel.add(taskPanel);
+    }
+
+    private void deleteTask(int taskId) {
+        Database.deleteTask(taskId);
     }
 
     private void updateTaskStatus(int taskId, String status) {
@@ -131,5 +167,21 @@ public class EmployeeGUI extends JFrame {
 
     private void showFeedback(String feedback) {
         JOptionPane.showMessageDialog(this, feedback);
+    }
+
+    private void editTask(Task task) {
+        new EditTaskGUI(this, "Edit Task", true, task);
+        managerTasksPanel.removeAll();
+        reloadManagerTasks();
+        managerTasksPanel.revalidate();
+        managerTasksPanel.repaint();
+    }
+
+    private void reloadManagerTasks() {
+        List<Task> tasks = Database.getManagerTasks(user.getUsername());
+
+        for (Task task : tasks) {
+            addTaskToPanel(task, managerTasksPanel, false);
+        }
     }
 }
