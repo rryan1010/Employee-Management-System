@@ -305,10 +305,4 @@ public class HRGUI extends JFrame {
         employeesTable.setModel(model);
         employeesTable.revalidate();
     }
-
-    public static void main(String[] args) {
-        User user = new User("Taiwo Oso", "password", "Manager", "Taiwo", "Oso", "CS Department", "Software Engineer",
-                "taiwo@example.com");
-        new HRGUI(user);
-    }
 }
