@@ -9,7 +9,6 @@ public class EditTaskGUI extends JFrame {
     private Task task;
     private JTextField titleField;
     private JTextArea descriptionArea;
-    private JComboBox<String> statusComboBox;
     private JTextField assignedToField;
     private JButton saveButton;
     private JButton cancelButton;
@@ -41,12 +40,6 @@ public class EditTaskGUI extends JFrame {
         descriptionArea = new JTextArea(task.getDescription());
         JScrollPane scrollPane = new JScrollPane(descriptionArea);
         panel.add(scrollPane);
-
-        panel.add(new JLabel("Status:"));
-        String[] statuses = { "Accepted", "Completed", "Pending", "Rejected" };
-        statusComboBox = new JComboBox<>(statuses);
-        statusComboBox.setSelectedItem(task.getStatus());
-        panel.add(statusComboBox);
 
         panel.add(new JLabel("Assigned To:"));
         assignedToField = new JTextField(task.getAssignedTo());
@@ -83,7 +76,6 @@ public class EditTaskGUI extends JFrame {
         // Update the task details
         task.setTitle(titleField.getText());
         task.setDescription(descriptionArea.getText());
-        task.setStatus((String) statusComboBox.getSelectedItem());
         task.setAssignedTo(assignedToField.getText());
 
         // Assuming a method to update the task in the database
