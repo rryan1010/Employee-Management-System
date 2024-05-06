@@ -104,7 +104,12 @@ public class EmployeeGUI extends JFrame {
         taskPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
         taskPanel.add(new JLabel("Title: " + task.getTitle()));
-        taskPanel.add(new JLabel("Assigned By: " + "HR"));
+        if (task.getManager().equals(user.getUsername())) {
+            taskPanel.add(new JLabel("Assigned By: " + "HR"));
+        } else {
+            taskPanel.add(new JLabel("Assigned By: " + task.getManager()));
+        }
+        
 
         if (isAccepted) {
             JButton completeButton = new JButton("Complete");
@@ -166,7 +171,11 @@ public class EmployeeGUI extends JFrame {
     }
 
     private void showFeedback(String feedback) {
-        JOptionPane.showMessageDialog(this, feedback);
+        if (feedback == null || feedback.isBlank()) {
+            JOptionPane.showMessageDialog(this, "N/A");
+        } else {
+            JOptionPane.showMessageDialog(this, feedback);
+        }
     }
 
     private void editTask(Task task) {
