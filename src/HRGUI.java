@@ -55,7 +55,7 @@ public class HRGUI extends JFrame {
 
         ImageIcon icon = new ImageIcon("images/logo.png");
         setIconImage(icon.getImage());
-        
+
         setVisible(true);
     }
 
@@ -66,13 +66,13 @@ public class HRGUI extends JFrame {
         profilePanel.setBorder(BorderFactory.createTitledBorder("Profile Details"));
 
         nameLabel = new JLabel("Name: " + user.getFirstName() + " " + user.getLastName());
-        nameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);  // Align to the left
+        nameLabel.setAlignmentX(Component.LEFT_ALIGNMENT); // Align to the left
         roleLabel = new JLabel("Role: " + user.getRole());
-        roleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);  // Align to the left
+        roleLabel.setAlignmentX(Component.LEFT_ALIGNMENT); // Align to the left
         departmentLabel = new JLabel("Department: " + user.getDepartment());
-        departmentLabel.setAlignmentX(Component.LEFT_ALIGNMENT);  // Align to the left
+        departmentLabel.setAlignmentX(Component.LEFT_ALIGNMENT); // Align to the left
         jobTitleLabel = new JLabel("Job Title: " + user.getJobTitle());
-        jobTitleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);  // Align to the left
+        jobTitleLabel.setAlignmentX(Component.LEFT_ALIGNMENT); // Align to the left
 
         profilePanel.add(nameLabel);
         nameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -124,15 +124,6 @@ public class HRGUI extends JFrame {
 
         profilePanel.add(taskCreationPanel);
     }
-    /*
-
-    User/task table - jlabels 
-
-    create task - jtextarea for title, description, and feedback
-
-    Add promote/demote in employee actions 
-
-    */
 
     private void setupEmployeeActionPanel() {
         employeeActionPanel = new JPanel(new GridBagLayout());
@@ -146,21 +137,22 @@ public class HRGUI extends JFrame {
         usernameDropdown = new JComboBox<>();
 
         JLabel userLabel = new JLabel("Select Employee's Username:");
-        userLabel.setPreferredSize(new Dimension(200, userLabel.getPreferredSize().height));  // Setting a preferred width
-        gbc.weightx = 1.0; 
+        userLabel.setPreferredSize(new Dimension(200, userLabel.getPreferredSize().height)); // Setting a preferred
+                                                                                             // width
+        gbc.weightx = 1.0;
         employeeActionPanel.add(userLabel, gbc);
 
         usernameDropdown = new JComboBox<>();
-        usernameDropdown.setMaximumSize(new Dimension(200, 25));  // Limiting the maximum size
+        usernameDropdown.setMaximumSize(new Dimension(200, 25)); // Limiting the maximum size
         employeeActionPanel.add(usernameDropdown, gbc);
 
         deleteEmployeeButton = new JButton("Delete Employee");
-        deleteEmployeeButton.setPreferredSize(new Dimension(200, 25));  // Setting a preferred height
+        deleteEmployeeButton.setPreferredSize(new Dimension(200, 25)); // Setting a preferred height
         employeeActionPanel.add(deleteEmployeeButton, gbc);
         deleteEmployeeButton.addActionListener(this::deleteEmployee);
 
         editEmployeeButton = new JButton("Edit Employee Details");
-        editEmployeeButton.setPreferredSize(new Dimension(200, 25));  // Setting a preferred height
+        editEmployeeButton.setPreferredSize(new Dimension(200, 25)); // Setting a preferred height
         employeeActionPanel.add(editEmployeeButton, gbc);
         editEmployeeButton.addActionListener(this::editEmployeeDetails);
 
@@ -200,9 +192,10 @@ public class HRGUI extends JFrame {
         employeesTable = new JTable(new DefaultTableModel(data, columnNames));
         JScrollPane scrollPane = new JScrollPane(employeesTable); // Enable scrolling
         employeesTable.setFillsViewportHeight(true);
-    
-        // You can add the scrollPane to a panel or directly to the mainPanel, depending on your layout
-        mainPanel.add(scrollPane, BorderLayout.CENTER);  // Adjust layout as necessary
+
+        // You can add the scrollPane to a panel or directly to the mainPanel, depending
+        // on your layout
+        mainPanel.add(scrollPane, BorderLayout.CENTER); // Adjust layout as necessary
     }
 
     private void createTask(ActionEvent e) {
@@ -214,16 +207,21 @@ public class HRGUI extends JFrame {
             return;
         }
 
-        boolean success = Database.createTaskDB(
-                titleField.getText(),
+        Task task = new Task(titleField.getText(),
                 descriptionField.getText(),
                 "Assigned",
                 assignedToDropdown.getSelectedItem().toString(),
                 managerDropdown.getSelectedItem().toString(),
                 feedbackField.getText());
 
+        boolean success = Database.createTaskDB(
+                task);
+
         if (success) {
             JOptionPane.showMessageDialog(this, "Task created successfully!");
+            titleField.setText("");
+            descriptionField.setText("");
+            feedbackField.setText("");
             refreshTaskTable();
         } else {
             JOptionPane.showMessageDialog(this, "Failed to create task.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -285,7 +283,7 @@ public class HRGUI extends JFrame {
                 return false;
             }
         };
-        
+
         tasksTable.setModel(model);
         tasksTable.revalidate();
     }

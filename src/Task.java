@@ -21,6 +21,16 @@ public class Task {
         this.feedback = feedback;
     }
 
+    public Task(String title, String description, String status, String assignedTo, String manager,
+            String feedback) {
+        this.title = title;
+        this.description = description;
+        this.status = status;
+        this.assignedTo = assignedTo;
+        this.manager = manager;
+        this.feedback = feedback;
+    }
+
     // Getters and setters
     public int getTaskId() {
         return taskId;

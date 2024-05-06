@@ -223,17 +223,16 @@ public class Database {
         }
     }
 
-    public static boolean createTaskDB(String title, String description, String status, String assignedTo,
-            String manager, String feedback) {
+    public static boolean createTaskDB(Task task) {
         String sql = "INSERT INTO task (title, description, status, assigned_to, manager, feedback) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection connection = DriverManager.getConnection(url);
                 PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, title);
-            statement.setString(2, description);
-            statement.setString(3, status);
-            statement.setString(4, assignedTo);
-            statement.setString(5, manager);
-            statement.setString(6, feedback);
+            statement.setString(1, task.getTitle());
+            statement.setString(2, task.getDescription());
+            statement.setString(3, task.getStatus());
+            statement.setString(4, task.getAssignedTo());
+            statement.setString(5, task.getManager());
+            statement.setString(6, task.getFeedback());
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
                 System.out.println("Task created successfully!");
@@ -244,23 +243,7 @@ public class Database {
             return false;
         }
         return false;
-        
-    }
 
-    public static void promoteEmployee(String username) {
-        String sql = "UPDATE user SET role = Manager WHERE username = ?";
-        try (Connection connection = DriverManager.getConnection(url);
-                PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, username);
-            int rowsUpdated = statement.executeUpdate();
-            if (rowsUpdated > 0) {
-                System.out.println("Employee role updated successfully!");
-            } else {
-                System.out.println("No employee role was updated.");
-            }
-        } catch (SQLException e) {
-            System.err.println("Error promoting employee to manager: " + e.getMessage());
-        }
     }
 
     // Method to update task status
@@ -303,42 +286,6 @@ public class Database {
         } catch (SQLException e) {
             System.out.println("Error updating task: " + e.getMessage());
             return false;
-        }
-    }
-
-    // Method to update feedback for a task
-    public static void updateTaskFeedback(int taskId, String newFeedback) {
-        String sql = "UPDATE task SET feedback = ? WHERE task_id = ?";
-        try (Connection connection = DriverManager.getConnection(url);
-                PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, newFeedback);
-            statement.setInt(2, taskId);
-            int rowsUpdated = statement.executeUpdate();
-            if (rowsUpdated > 0) {
-                System.out.println("Task feedback updated successfully!");
-            } else {
-                System.out.println("No feedback was updated.");
-            }
-        } catch (SQLException e) {
-            System.err.println("Error updating task feedback: " + e.getMessage());
-        }
-    }
-
-    // Method to update description for a task
-    public static void updateTaskDescription(int taskId, String newDesription) {
-        String sql = "UPDATE task SET description = ? WHERE task_id = ?";
-        try (Connection connection = DriverManager.getConnection(url);
-                PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, newDesription);
-            statement.setInt(2, taskId);
-            int rowsUpdated = statement.executeUpdate();
-            if (rowsUpdated > 0) {
-                System.out.println("Task description updated successfully!");
-            } else {
-                System.out.println("No description was updated.");
-            }
-        } catch (SQLException e) {
-            System.err.println("Error updating task description: " + e.getMessage());
         }
     }
 
@@ -394,25 +341,6 @@ public class Database {
             System.err.println("Error retrieving data: " + e.getMessage());
         }
         return tasks;
-    }
-
-    public static boolean isEmployee(String username) {
-        String sql = "SELECT * FROM user WHERE username = ? AND role IN ('Employee', 'Manager')";
-
-        try (
-                Connection connection = DriverManager.getConnection(url);
-                PreparedStatement statement = connection.prepareStatement(sql);) {
-            statement.setString(1, username);
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    return true;
-                }
-            }
-        } catch (SQLException e) {
-            System.err.println("Error retrieving data: " + e.getMessage());
-        }
-        return false;
     }
 
     public static boolean deleteTask(int taskId) {
@@ -480,7 +408,11 @@ public class Database {
 
     public static Object[][] getAllEmployees() {
         List<Object[]> list = new ArrayList<>();
-        String sql = "SELECT username, first_name, last_name, email, role, department, job_title FROM user WHERE role != 'HR'"; // Exclude HR from the list
+        String sql = "SELECT username, first_name, last_name, email, role, department, job_title FROM user WHERE role != 'HR'"; // Exclude
+                                                                                                                                // HR
+                                                                                                                                // from
+                                                                                                                                // the
+                                                                                                                                // list
 
         try (Connection connection = DriverManager.getConnection(url);
                 PreparedStatement statement = connection.prepareStatement(sql);
