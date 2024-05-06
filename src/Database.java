@@ -223,17 +223,16 @@ public class Database {
         }
     }
 
-    public static boolean createTaskDB(String title, String description, String status, String assignedTo,
-            String manager, String feedback) {
+    public static boolean createTaskDB(Task task) {
         String sql = "INSERT INTO task (title, description, status, assigned_to, manager, feedback) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection connection = DriverManager.getConnection(url);
                 PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, title);
-            statement.setString(2, description);
-            statement.setString(3, status);
-            statement.setString(4, assignedTo);
-            statement.setString(5, manager);
-            statement.setString(6, feedback);
+            statement.setString(1, task.getTitle());
+            statement.setString(2, task.getDescription());
+            statement.setString(3, task.getStatus());
+            statement.setString(4, task.getAssignedTo());
+            statement.setString(5, task.getManager());
+            statement.setString(6, task.getFeedback());
             int rowsInserted = statement.executeUpdate();
             if (rowsInserted > 0) {
                 System.out.println("Task created successfully!");

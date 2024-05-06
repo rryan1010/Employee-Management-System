@@ -55,7 +55,7 @@ public class HRGUI extends JFrame {
 
         ImageIcon icon = new ImageIcon("images/logo.png");
         setIconImage(icon.getImage());
-        
+
         setVisible(true);
     }
 
@@ -216,16 +216,21 @@ public class HRGUI extends JFrame {
             return;
         }
 
-        boolean success = Database.createTaskDB(
-                titleField.getText(),
+        Task task = new Task(titleField.getText(),
                 descriptionField.getText(),
                 "Assigned",
                 assignedToDropdown.getSelectedItem().toString(),
                 managerDropdown.getSelectedItem().toString(),
                 feedbackField.getText());
 
+        boolean success = Database.createTaskDB(
+                task);
+
         if (success) {
             JOptionPane.showMessageDialog(this, "Task created successfully!");
+            titleField.setText("");
+            descriptionField.setText("");
+            feedbackField.setText("");
             refreshTaskTable();
         } else {
             JOptionPane.showMessageDialog(this, "Failed to create task.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -287,7 +292,7 @@ public class HRGUI extends JFrame {
                 return false;
             }
         };
-        
+
         tasksTable.setModel(model);
         tasksTable.revalidate();
     }
