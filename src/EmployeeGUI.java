@@ -56,6 +56,14 @@ public class EmployeeGUI extends JFrame {
         profilePanel.add(new JLabel("Role: " + user.getRole()));
         profilePanel.add(new JLabel("Job Title: " + user.getJobTitle()));
 
+        JButton goBackButton = new JButton("Go Back");
+        goBackButton.addActionListener(e -> {
+            dispose();
+            new LoginGUI();
+        });
+
+        profilePanel.add(goBackButton);
+
         mainPanel.add(profilePanel, BorderLayout.WEST);
     }
 
