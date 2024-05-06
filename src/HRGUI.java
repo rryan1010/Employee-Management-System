@@ -66,7 +66,7 @@ public class HRGUI extends JFrame {
         profilePanel.add(departmentLabel);
         profilePanel.add(jobTitleLabel);
 
-        JButton goBackButton = new JButton("Go Back");
+        JButton goBackButton = new JButton("Log Out");
         goBackButton.addActionListener(e -> {
             dispose();
             new LoginGUI();
