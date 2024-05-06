@@ -28,6 +28,8 @@ public class HRGUI extends JFrame {
     // Task List Components
     private JTable tasksTable, employeesTable;
     private JScrollPane scrollPane;
+    private JTextField deleteTaskField;
+    private JButton deleteTaskButton;
 
     public HRGUI(User user) {
         this.user = user;
@@ -168,9 +170,22 @@ public class HRGUI extends JFrame {
     private void setupTaskListPanel() {
         tasksTable = new JTable();
         scrollPane = new JScrollPane(tasksTable);
+        deleteTaskField = new JTextField(5);
+        deleteTaskButton = new JButton("Delete");
+        deleteTaskButton.addActionListener(this::deleteTask);
         tasksTable.setFillsViewportHeight(true);
 
-        mainPanel.add(scrollPane, BorderLayout.EAST);
+        JPanel deleteTaskPanel = new JPanel(new FlowLayout());
+        deleteTaskPanel.add(new JLabel("Task ID: "));
+        deleteTaskPanel.add(deleteTaskField);
+        deleteTaskPanel.add(deleteTaskButton);
+
+        // Create a panel to hold the table and the delete task panel
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(scrollPane, BorderLayout.CENTER);
+        panel.add(deleteTaskPanel, BorderLayout.SOUTH);
+
+        mainPanel.add(panel, BorderLayout.EAST);
     }
 
     private void setupEmployeeTable() {
@@ -225,6 +240,21 @@ public class HRGUI extends JFrame {
         }
     }
 
+    private void deleteTask(ActionEvent e) {
+        try {
+            int taskId = Integer.parseInt(deleteTaskField.getText());
+            if (Database.deleteTask(taskId)) {
+                JOptionPane.showMessageDialog(this, "Task deleted successfully!");
+                refreshTaskTable();
+            } else {
+                JOptionPane.showMessageDialog(this, "Enter valid Task ID!");
+            }
+        } catch (NumberFormatException exc) {
+            JOptionPane.showMessageDialog(this, "ID must be integer!");
+        }
+        deleteTaskField.setText("");
+    }
+
     private void editEmployeeDetails(ActionEvent e) {
         String username = (String) usernameDropdown.getSelectedItem();
         if (username != null) {
@@ -255,6 +285,7 @@ public class HRGUI extends JFrame {
                 return false;
             }
         };
+        
         tasksTable.setModel(model);
         tasksTable.revalidate();
     }
