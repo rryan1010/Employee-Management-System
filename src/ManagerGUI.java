@@ -102,7 +102,7 @@ public class ManagerGUI extends JFrame {
         if (isAccepted) {
             JButton completeButton = new JButton("Complete");
             completeButton.addActionListener(e -> {
-                updateTaskStatus(task.getTaskId(), "Completed");
+                deleteTask(task.getTaskId());
                 panel.remove(taskPanel);
                 panel.revalidate();
                 panel.repaint();
@@ -134,19 +134,24 @@ public class ManagerGUI extends JFrame {
                 acceptedTasksPanel.repaint();
                 panel.revalidate();
                 panel.repaint();
+                mainPanel.revalidate();
+                mainPanel.repaint();
             });
             rejectButton.addActionListener(e -> {
-                updateTaskStatus(task.getTaskId(), "Rejected");
+                deleteTask(task.getTaskId());
                 panel.remove(taskPanel);
                 panel.revalidate();
                 panel.repaint();
             });
-
             taskPanel.add(acceptButton);
             taskPanel.add(rejectButton);
         }
 
         panel.add(taskPanel);
+    }
+
+    private void deleteTask(int taskId) {
+        Database.deleteTask(taskId);
     }
 
     private void updateTaskStatus(int taskId, String status) {
