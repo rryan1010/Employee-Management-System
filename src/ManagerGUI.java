@@ -66,6 +66,14 @@ public class ManagerGUI extends JFrame {
         profilePanel.add(new JLabel("Role: " + user.getRole()));
         profilePanel.add(new JLabel("Job Title: " + user.getJobTitle()));
 
+        JButton goBackButton = new JButton("Go Back");
+        goBackButton.addActionListener(e -> {
+            dispose();
+            new LoginGUI();
+        });
+
+        profilePanel.add(goBackButton);
+
         mainPanel.add(profilePanel, BorderLayout.WEST);
     }
 
@@ -105,27 +113,16 @@ public class ManagerGUI extends JFrame {
             taskPanel.add(feedbackButton);
             taskPanel.add(completeButton);
         } else if (task.getManager().equals(user.getUsername())) {
-            taskPanel.add(new JLabel("Employee: "));
-            JTextField employeeName = new JTextField(20);
-            JButton assignButton = new JButton("Assign");
-            assignButton.addActionListener(e -> {
-                if (assignTask(task, employeeName.getText())) {
-                    taskPanel.remove(employeeName);
-                    taskPanel.remove(assignButton);
-                    taskPanel.add(new JLabel(employeeName.getText()));
-                    taskPanel.revalidate();
-                    taskPanel.repaint();
-                }
+            JButton editButton = new JButton("Edit");
+            editButton.addActionListener(e -> {
+                editTask(task);
             });
-            // check if task has already been assigned
-            // if (task.getAssignedTo() != null && !task.getAssignedTo().isBlank()) {
-
-            // } else {
-            //     taskPanel.add(employeeName);
-            //     taskPanel.add(assignButton);
-            // }
-            taskPanel.add(employeeName);
-            taskPanel.add(assignButton);
+            String assignedTo = task.getAssignedTo();
+            if (assignedTo == null || assignedTo.isBlank()) {
+                assignedTo = "N/A";
+            }
+            taskPanel.add(new JLabel("Assigned To: " + assignedTo));
+            taskPanel.add(editButton);
         } else {
             JButton acceptButton = new JButton("Accept");
             JButton rejectButton = new JButton("Reject");
@@ -160,19 +157,23 @@ public class ManagerGUI extends JFrame {
         JOptionPane.showMessageDialog(this, feedback);
     }
 
-    private boolean assignTask(Task task, String username) {
-        if (username.isBlank()) {
-            JOptionPane.showMessageDialog(this, "Employee cannot be empty!");
-            return false;
-        }
-
-        if (Database.isEmployee(username)) {
-            Database.createTaskDB(task.getTitle(), task.getDescription(), task.getStatus(),
-                    username, user.getUsername(), "");
-            return true;
-        }
-
-        JOptionPane.showMessageDialog(this, "Employee does not exist!");
-        return false;
+    private void editTask(Task task) {
+        
     }
+
+    // private boolean assignTask(Task task, String username) {
+    //     if (username.isBlank()) {
+    //         JOptionPane.showMessageDialog(this, "Employee cannot be empty!");
+    //         return false;
+    //     }
+
+    //     if (Database.isEmployee(username)) {
+    //         Database.updateT(task.getTitle(), task.getDescription(), task.getStatus(),
+    //                 username, user.getUsername(), "");
+    //         return true;
+    //     }
+
+    //     JOptionPane.showMessageDialog(this, "Employee does not exist!");
+    //     return false;
+    // }
 }

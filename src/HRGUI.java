@@ -51,6 +51,31 @@ public class HRGUI extends JFrame {
         setVisible(true);
     }
 
+    private void setupProfilePanel() {
+        profilePanel = new JPanel();
+        profilePanel.setLayout(new BoxLayout(profilePanel, BoxLayout.Y_AXIS));
+        profilePanel.setBorder(BorderFactory.createTitledBorder("Profile Details"));
+
+        nameLabel = new JLabel("Name: " + user.getFirstName() + " " + user.getLastName());
+        roleLabel = new JLabel("Role: " + user.getRole());
+        departmentLabel = new JLabel("Department: " + user.getDepartment());
+        jobTitleLabel = new JLabel("Job Title: " + user.getJobTitle());
+
+        profilePanel.add(nameLabel);
+        profilePanel.add(roleLabel);
+        profilePanel.add(departmentLabel);
+        profilePanel.add(jobTitleLabel);
+
+        JButton goBackButton = new JButton("Go Back");
+        goBackButton.addActionListener(e -> {
+            dispose();
+            new LoginGUI();
+        });
+
+        profilePanel.add(goBackButton);
+
+        mainPanel.add(profilePanel, BorderLayout.WEST);
+    }
 
     private void setupTaskCreationPanel() {
         taskCreationPanel = new JPanel();
@@ -104,25 +129,6 @@ public class HRGUI extends JFrame {
         profilePanel.add(employeeActionPanel);
     }
 
-    private void setupProfilePanel() {
-        profilePanel = new JPanel();
-        profilePanel.setLayout(new BoxLayout(profilePanel, BoxLayout.Y_AXIS));
-        profilePanel.setBorder(BorderFactory.createTitledBorder("Profile Details"));
-
-        nameLabel = new JLabel("Name: " + user.getFirstName() + " " + user.getLastName());
-        roleLabel = new JLabel("Role: " + user.getRole());
-        departmentLabel = new JLabel("Department: " + user.getDepartment());
-        jobTitleLabel = new JLabel("Job Title: " + user.getJobTitle());
-
-        profilePanel.add(nameLabel);
-        profilePanel.add(roleLabel);
-        profilePanel.add(departmentLabel);
-        profilePanel.add(jobTitleLabel);
-
-        mainPanel.add(profilePanel, BorderLayout.WEST);
-    }
-
-    
     private void setupTaskListPanel() {
         tasksTable = new JTable();
         scrollPane = new JScrollPane(tasksTable);
