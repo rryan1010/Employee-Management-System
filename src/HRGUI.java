@@ -46,6 +46,8 @@ public class HRGUI extends JFrame {
 
         setupTaskListPanel();
         setupEmployeeTable();
+        refreshEmployeeTable();
+        refreshTaskTable();
 
         getContentPane().add(mainPanel);
         setVisible(true);
@@ -53,27 +55,38 @@ public class HRGUI extends JFrame {
 
     private void setupProfilePanel() {
         profilePanel = new JPanel();
+        profilePanel.setLayout(new GridLayout(0, 1));
         profilePanel.setLayout(new BoxLayout(profilePanel, BoxLayout.Y_AXIS));
         profilePanel.setBorder(BorderFactory.createTitledBorder("Profile Details"));
 
         nameLabel = new JLabel("Name: " + user.getFirstName() + " " + user.getLastName());
+        nameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);  // Align to the left
         roleLabel = new JLabel("Role: " + user.getRole());
+        roleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);  // Align to the left
         departmentLabel = new JLabel("Department: " + user.getDepartment());
+        departmentLabel.setAlignmentX(Component.LEFT_ALIGNMENT);  // Align to the left
         jobTitleLabel = new JLabel("Job Title: " + user.getJobTitle());
+        jobTitleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);  // Align to the left
 
         profilePanel.add(nameLabel);
+        nameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         profilePanel.add(roleLabel);
+        roleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         profilePanel.add(departmentLabel);
+        departmentLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         profilePanel.add(jobTitleLabel);
+        jobTitleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         JButton goBackButton = new JButton("Log Out");
+        goBackButton.setAlignmentX(Component.LEFT_ALIGNMENT);
         goBackButton.addActionListener(e -> {
             dispose();
             new LoginGUI();
         });
 
         profilePanel.add(goBackButton);
-
+        profilePanel.setPreferredSize(new Dimension(300, mainPanel.getHeight()));
+        profilePanel.setPreferredSize(new Dimension(getWidth() / 4, getHeight()));
         mainPanel.add(profilePanel, BorderLayout.WEST);
     }
 
@@ -96,8 +109,6 @@ public class HRGUI extends JFrame {
         taskCreationPanel.add(titleField);
         taskCreationPanel.add(new JLabel("Description:"));
         taskCreationPanel.add(descriptionField);
-        taskCreationPanel.add(new JLabel("Status:"));
-        taskCreationPanel.add(statusField);
         taskCreationPanel.add(new JLabel("Assigned To:"));
         taskCreationPanel.add(assignedToDropdown);
         taskCreationPanel.add(new JLabel("Manager:"));
@@ -108,23 +119,43 @@ public class HRGUI extends JFrame {
 
         profilePanel.add(taskCreationPanel);
     }
+    /*
+
+    User/task table - jlabels 
+
+    create task - jtextarea for title, description, and feedback
+
+    Add promote/demote in employee actions 
+
+    */
 
     private void setupEmployeeActionPanel() {
-        employeeActionPanel = new JPanel(new GridLayout(0, 2, 5, 5));
+        employeeActionPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridwidth = GridBagConstraints.REMAINDER;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.insets = new Insets(1, 5, 1, 5);
+
         employeeActionPanel.setBorder(BorderFactory.createTitledBorder("Employee Actions"));
 
         usernameDropdown = new JComboBox<>();
 
+        JLabel userLabel = new JLabel("Select Employee's Username:");
+        userLabel.setPreferredSize(new Dimension(200, userLabel.getPreferredSize().height));  // Setting a preferred width
+        gbc.weightx = 1.0; 
+        employeeActionPanel.add(userLabel, gbc);
+
+        usernameDropdown = new JComboBox<>();
+        usernameDropdown.setMaximumSize(new Dimension(200, 25));  // Limiting the maximum size
+        employeeActionPanel.add(usernameDropdown, gbc);
+
         deleteEmployeeButton = new JButton("Delete Employee");
-        deleteEmployeeButton.addActionListener(this::deleteEmployee);
+        deleteEmployeeButton.setPreferredSize(new Dimension(200, 25));  // Setting a preferred height
+        employeeActionPanel.add(deleteEmployeeButton, gbc);
 
         editEmployeeButton = new JButton("Edit Employee Details");
-        editEmployeeButton.addActionListener(this::editEmployeeDetails);
-
-        employeeActionPanel.add(new JLabel("Select Employee's Username:"));
-        employeeActionPanel.add(usernameDropdown);
-        employeeActionPanel.add(deleteEmployeeButton);
-        employeeActionPanel.add(editEmployeeButton);
+        editEmployeeButton.setPreferredSize(new Dimension(200, 25));  // Setting a preferred height
+        employeeActionPanel.add(editEmployeeButton, gbc);
 
         profilePanel.add(employeeActionPanel);
     }
@@ -134,7 +165,7 @@ public class HRGUI extends JFrame {
         scrollPane = new JScrollPane(tasksTable);
         tasksTable.setFillsViewportHeight(true);
 
-        mainPanel.add(scrollPane, BorderLayout.CENTER);
+        mainPanel.add(scrollPane, BorderLayout.EAST);
     }
 
     private void setupEmployeeTable() {
@@ -149,16 +180,14 @@ public class HRGUI extends JFrame {
         employeesTable = new JTable(new DefaultTableModel(data, columnNames));
         JScrollPane scrollPane = new JScrollPane(employeesTable); // Enable scrolling
         employeesTable.setFillsViewportHeight(true);
-
-        // You can add the scrollPane to a panel or directly to the mainPanel, depending
-        // on your layout
-        mainPanel.add(scrollPane, BorderLayout.EAST); // Adjust layout as necessary
+    
+        // You can add the scrollPane to a panel or directly to the mainPanel, depending on your layout
+        mainPanel.add(scrollPane, BorderLayout.CENTER);  // Adjust layout as necessary
     }
 
     private void createTask(ActionEvent e) {
         if (titleField.getText().isEmpty() ||
                 descriptionField.getText().isEmpty() ||
-                statusField.getText().isEmpty() ||
                 assignedToDropdown.getSelectedItem() == null ||
                 managerDropdown.getSelectedItem() == null) {
             JOptionPane.showMessageDialog(this, "All fields must be filled out.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -168,7 +197,7 @@ public class HRGUI extends JFrame {
         boolean success = Database.createTaskDB(
                 titleField.getText(),
                 descriptionField.getText(),
-                statusField.getText(),
+                "Assigned",
                 assignedToDropdown.getSelectedItem().toString(),
                 managerDropdown.getSelectedItem().toString(),
                 feedbackField.getText());
