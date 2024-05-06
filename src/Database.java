@@ -143,6 +143,34 @@ public class Database {
         return null;
     }
 
+    public static User getUserHR(String username) {
+        String sql = "SELECT * FROM user WHERE username = ? ";
+
+        try (
+                Connection connection = DriverManager.getConnection(url);
+                PreparedStatement statement = connection.prepareStatement(sql);) {
+            statement.setString(1, username);
+
+            try (ResultSet resultSet = statement.executeQuery()) {
+                while (resultSet.next()) {
+                    String role = resultSet.getString("role");
+                    String firstName = resultSet.getString("first_name");
+                    String lastName = resultSet.getString("last_name");
+                    String email = resultSet.getString("email");
+                    String password = resultSet.getString("password");
+                    String departmentName = resultSet.getString("department");
+                    String jobTitle = resultSet.getString("job_title");
+                    User user = new User(username, password, role, firstName, lastName, departmentName, jobTitle,
+                            email);
+                    return user;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving data: " + e.getMessage());
+        }
+        return null;
+    }
+
     private static boolean userExists(String username) {
         String sql = "SELECT * FROM user WHERE LOWER(username) = LOWER(?)";
 
@@ -448,5 +476,33 @@ public class Database {
         }
         return usernames;
     }
+
+    public static Object[][] getAllEmployees() {
+        List<Object[]> list = new ArrayList<>();
+        String sql = "SELECT username, first_name, last_name, email, role, department, job_title FROM user WHERE role != 'HR'";  // Exclude HR from the list
+    
+        try (Connection connection = DriverManager.getConnection(url);
+             PreparedStatement statement = connection.prepareStatement(sql);
+             ResultSet resultSet = statement.executeQuery()) {
+    
+            while (resultSet.next()) {
+                Object[] row = new Object[7];  // Create an array to hold the data for one row
+                row[0] = resultSet.getString("username");
+                row[1] = resultSet.getString("first_name");
+                row[2] = resultSet.getString("last_name");
+                row[3] = resultSet.getString("email");
+                row[4] = resultSet.getString("role");
+                row[5] = resultSet.getString("department");
+                row[6] = resultSet.getString("job_title");
+                list.add(row);  // Add the row to the list
+            }
+        } catch (SQLException e) {
+            System.err.println("Error retrieving employee data: " + e.getMessage());
+        }
+    
+        // Convert the list of Object arrays to a 2D Object array
+        return list.toArray(new Object[0][]);
+    }
+    
 
 }
