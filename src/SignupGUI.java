@@ -157,10 +157,7 @@ public class SignupGUI extends JFrame implements ActionListener {
         }
 
         JOptionPane.showMessageDialog(this, "Account Created!");
-        clearFields();
-    }
-
-    private void clearFields() {
+        //Clears fields
         usernameField.setText("");
         passwordField.setText("");
         confirmPasswordField.setText("");
@@ -170,4 +167,5 @@ public class SignupGUI extends JFrame implements ActionListener {
         jobTitleField.setText("");
         emailField.setText("");
     }
+
 }

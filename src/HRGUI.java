@@ -167,6 +167,19 @@ public class HRGUI extends JFrame {
         deleteTaskButton.addActionListener(this::deleteTask);
         tasksTable.setFillsViewportHeight(true);
 
+        tasksTable.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                int row = tasksTable.rowAtPoint(e.getPoint());
+                int col = tasksTable.columnAtPoint(e.getPoint());
+                if (col == 1 || col == 2) { // Assuming 'Title' is column 1 and 'Description' is column 2
+                    Object value = tasksTable.getValueAt(row, col);
+                    if (value != null) {
+                        showTextDialog(value.toString());
+                    }
+                }
+            }
+        });
+
         JPanel deleteTaskPanel = new JPanel(new FlowLayout());
         deleteTaskPanel.add(new JLabel("Task ID: "));
         deleteTaskPanel.add(deleteTaskField);
@@ -178,6 +191,16 @@ public class HRGUI extends JFrame {
         panel.add(deleteTaskPanel, BorderLayout.SOUTH);
 
         mainPanel.add(panel, BorderLayout.EAST);
+    }
+
+    private void showTextDialog(String text) {
+        JTextArea textArea = new JTextArea(text);
+        textArea.setEditable(false);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setPreferredSize(new Dimension(350, 150));
+        JOptionPane.showMessageDialog(null, scrollPane, "Full Text", JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void setupEmployeeTable() {
