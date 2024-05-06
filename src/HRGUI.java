@@ -215,34 +215,27 @@ public class HRGUI extends JFrame {
     
 
     private void populateUserDropdowns() {
-        List<String> usernames = Database.getEmployeeUsernames(); // Implement this method in Database
-        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(usernames.toArray(new String[0]));
-        assignedToDropdown.setModel(model);
-        managerDropdown.setModel(model);
-        usernameDropdown.setModel(model);
+        List<String> usernames = Database.getEmployeeUsernames(); // Fetch usernames from database
+        assignedToDropdown.setModel(new DefaultComboBoxModel<>(usernames.toArray(new String[0])));
+        managerDropdown.setModel(new DefaultComboBoxModel<>(usernames.toArray(new String[0])));
+        usernameDropdown.setModel(new DefaultComboBoxModel<>(usernames.toArray(new String[0])));
     }
 
     private void refreshTaskTable() {
         Object[][] data = Database.getAllTasks();
-        DefaultTableModel model = new DefaultTableModel(data,
-                new String[] { "Task ID", "Title", "Description", "Status", "Assigned To", "Manager" });
+        DefaultTableModel model = new DefaultTableModel(data, new String[] { "Task ID", "Title", "Description", "Status", "Assigned To", "Manager" });
         tasksTable.setModel(model);
+        tasksTable.revalidate();
     }
 
     private void refreshEmployeeTable() {
         // Fetch the latest employee data from the database
         Object[][] data = Database.getAllEmployees(); // You need to implement this method in the Database class
         String[] columnNames = {"Username", "First Name", "Last Name", "Email", "Role", "Department", "Job Title"}; // Adjust column names as needed
-    
         // Create a new table model with the fetched data
         DefaultTableModel model = new DefaultTableModel(data, columnNames);
-    
-        // Update the table model
         employeesTable.setModel(model);
-    
-        // Optional: refresh the UI to display changes
-        employeesTable.revalidate();
-        employeesTable.repaint();
+        employeesTable.revalidate(); 
     }
     
 
