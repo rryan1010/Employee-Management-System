@@ -191,9 +191,8 @@ public class Database {
     }
 
     //
-    public static boolean updateEmployee(String username, String firstName, String lastName, String role,
-            String department, String jobTitle, String email) {
-        if (!userExists(username)) {
+    public static boolean updateEmployee(User user) {
+        if (!userExists(user.getUsername())) {
             System.out.println("User does not exist.");
             return false;
         }
@@ -202,13 +201,13 @@ public class Database {
 
         try (Connection connection = DriverManager.getConnection(url);
                 PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, firstName);
-            statement.setString(2, lastName);
-            statement.setString(3, role);
-            statement.setString(4, department);
-            statement.setString(5, jobTitle);
-            statement.setString(6, email);
-            statement.setString(7, username);
+            statement.setString(1, user.getFirstName());
+            statement.setString(2, user.getLastName());
+            statement.setString(3, user.getRole());
+            statement.setString(4, user.getDepartment());
+            statement.setString(5, user.getJobTitle());
+            statement.setString(6, user.getEmail());
+            statement.setString(7, user.getUsername());
 
             int rowsUpdated = statement.executeUpdate();
             if (rowsUpdated > 0) {

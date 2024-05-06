@@ -28,6 +28,8 @@ public class HRGUI extends JFrame {
     // Task List Components
     private JTable tasksTable, employeesTable;
     private JScrollPane scrollPane;
+    private JTextField deleteTaskField;
+    private JButton deleteTaskButton;
 
     public HRGUI(User user) {
         this.user = user;
@@ -50,6 +52,10 @@ public class HRGUI extends JFrame {
         refreshTaskTable();
 
         getContentPane().add(mainPanel);
+
+        ImageIcon icon = new ImageIcon("images/logo.png");
+        setIconImage(icon.getImage());
+        
         setVisible(true);
     }
 
@@ -152,10 +158,12 @@ public class HRGUI extends JFrame {
         deleteEmployeeButton = new JButton("Delete Employee");
         deleteEmployeeButton.setPreferredSize(new Dimension(200, 25)); // Setting a preferred height
         employeeActionPanel.add(deleteEmployeeButton, gbc);
+        deleteEmployeeButton.addActionListener(this::deleteEmployee);
 
         editEmployeeButton = new JButton("Edit Employee Details");
         editEmployeeButton.setPreferredSize(new Dimension(200, 25)); // Setting a preferred height
         employeeActionPanel.add(editEmployeeButton, gbc);
+        editEmployeeButton.addActionListener(this::editEmployeeDetails);
 
         profilePanel.add(employeeActionPanel);
     }
@@ -163,9 +171,22 @@ public class HRGUI extends JFrame {
     private void setupTaskListPanel() {
         tasksTable = new JTable();
         scrollPane = new JScrollPane(tasksTable);
+        deleteTaskField = new JTextField(5);
+        deleteTaskButton = new JButton("Delete");
+        deleteTaskButton.addActionListener(this::deleteTask);
         tasksTable.setFillsViewportHeight(true);
 
-        mainPanel.add(scrollPane, BorderLayout.EAST);
+        JPanel deleteTaskPanel = new JPanel(new FlowLayout());
+        deleteTaskPanel.add(new JLabel("Task ID: "));
+        deleteTaskPanel.add(deleteTaskField);
+        deleteTaskPanel.add(deleteTaskButton);
+
+        // Create a panel to hold the table and the delete task panel
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(scrollPane, BorderLayout.CENTER);
+        panel.add(deleteTaskPanel, BorderLayout.SOUTH);
+
+        mainPanel.add(panel, BorderLayout.EAST);
     }
 
     private void setupEmployeeTable() {
@@ -221,26 +242,28 @@ public class HRGUI extends JFrame {
         }
     }
 
+    private void deleteTask(ActionEvent e) {
+        try {
+            int taskId = Integer.parseInt(deleteTaskField.getText());
+            if (Database.deleteTask(taskId)) {
+                JOptionPane.showMessageDialog(this, "Task deleted successfully!");
+                refreshTaskTable();
+            } else {
+                JOptionPane.showMessageDialog(this, "Enter valid Task ID!");
+            }
+        } catch (NumberFormatException exc) {
+            JOptionPane.showMessageDialog(this, "ID must be integer!");
+        }
+        deleteTaskField.setText("");
+    }
+
     private void editEmployeeDetails(ActionEvent e) {
         String username = (String) usernameDropdown.getSelectedItem();
         if (username != null) {
-            User user = Database.getUserHR(username); // Assuming getUser method fetches the user details
-            if (user != null) {
-                // Logic to open a dialog or another panel for editing
-                // For simplicity, assume we're using a JOptionPane for input
-                String newRole = JOptionPane.showInputDialog("Enter new role for " + username);
-                if (newRole != null && !newRole.isEmpty()) {
-                    boolean success = Database.updateEmployee(
-                            username, user.getFirstName(), user.getLastName(), newRole,
-                            user.getDepartment(), user.getJobTitle(), user.getEmail());
-                    if (success) {
-                        JOptionPane.showMessageDialog(this, "Employee details updated successfully.");
-                        refreshEmployeeTable();
-                    } else {
-                        JOptionPane.showMessageDialog(this, "Failed to update employee details.", "Error",
-                                JOptionPane.ERROR_MESSAGE);
-                    }
-                }
+            User employee = Database.getUserHR(username); // Assuming getUser method fetches the user details
+            if (employee != null) {
+                new EditEmployeeGUI(this, "Edit Employee", true, employee);
+                JOptionPane.showMessageDialog(this, "User updated successfully!");
             } else {
                 JOptionPane.showMessageDialog(this, "User not found.", "Error", JOptionPane.ERROR_MESSAGE);
             }
@@ -264,6 +287,7 @@ public class HRGUI extends JFrame {
                 return false;
             }
         };
+        
         tasksTable.setModel(model);
         tasksTable.revalidate();
     }
@@ -282,11 +306,5 @@ public class HRGUI extends JFrame {
         };
         employeesTable.setModel(model);
         employeesTable.revalidate();
-    }
-
-    public static void main(String[] args) {
-        User user = new User("Taiwo Oso", "password", "Manager", "Taiwo", "Oso", "CS Department", "Software Engineer",
-                "taiwo@example.com");
-        new HRGUI(user);
     }
 }
