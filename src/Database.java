@@ -195,12 +195,12 @@ public class Database {
             return false;
         }
     }
-    
 
-    public static boolean createTaskDB(String title, String description, String status, String assignedTo, String manager, String feedback) {
+    public static boolean createTaskDB(String title, String description, String status, String assignedTo,
+            String manager, String feedback) {
         String sql = "INSERT INTO task (title, description, status, assigned_to, manager, feedback) VALUES (?, ?, 'Assigned', ?, ?, ?)";
         try (Connection connection = DriverManager.getConnection(url);
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+                PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, title);
             statement.setString(2, description);
             statement.setString(3, status);
@@ -217,7 +217,6 @@ public class Database {
         }
         return false;
     }
-    
 
     public static void promoteEmployee(String username) {
         String sql = "UPDATE user SET role = Manager WHERE username = ?";
@@ -414,8 +413,8 @@ public class Database {
         List<String> usernames = new ArrayList<>();
         String sql = "SELECT username FROM user WHERE role != 'HR'";
         try (Connection connection = DriverManager.getConnection(url);
-             PreparedStatement statement = connection.prepareStatement(sql);
-             ResultSet resultSet = statement.executeQuery()) {
+                PreparedStatement statement = connection.prepareStatement(sql);
+                ResultSet resultSet = statement.executeQuery()) {
             while (resultSet.next()) {
                 usernames.add(resultSet.getString("username"));
             }
@@ -424,7 +423,5 @@ public class Database {
         }
         return usernames;
     }
-    
-    
 
 }
