@@ -246,22 +246,6 @@ public class Database {
 
     }
 
-    public static void promoteEmployee(String username) {
-        String sql = "UPDATE user SET role = Manager WHERE username = ?";
-        try (Connection connection = DriverManager.getConnection(url);
-                PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, username);
-            int rowsUpdated = statement.executeUpdate();
-            if (rowsUpdated > 0) {
-                System.out.println("Employee role updated successfully!");
-            } else {
-                System.out.println("No employee role was updated.");
-            }
-        } catch (SQLException e) {
-            System.err.println("Error promoting employee to manager: " + e.getMessage());
-        }
-    }
-
     // Method to update task status
     public static void updateTaskStatus(int taskId, String newStatus) {
         String sql = "UPDATE task SET status = ? WHERE task_id = ?";
@@ -302,42 +286,6 @@ public class Database {
         } catch (SQLException e) {
             System.out.println("Error updating task: " + e.getMessage());
             return false;
-        }
-    }
-
-    // Method to update feedback for a task
-    public static void updateTaskFeedback(int taskId, String newFeedback) {
-        String sql = "UPDATE task SET feedback = ? WHERE task_id = ?";
-        try (Connection connection = DriverManager.getConnection(url);
-                PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, newFeedback);
-            statement.setInt(2, taskId);
-            int rowsUpdated = statement.executeUpdate();
-            if (rowsUpdated > 0) {
-                System.out.println("Task feedback updated successfully!");
-            } else {
-                System.out.println("No feedback was updated.");
-            }
-        } catch (SQLException e) {
-            System.err.println("Error updating task feedback: " + e.getMessage());
-        }
-    }
-
-    // Method to update description for a task
-    public static void updateTaskDescription(int taskId, String newDesription) {
-        String sql = "UPDATE task SET description = ? WHERE task_id = ?";
-        try (Connection connection = DriverManager.getConnection(url);
-                PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setString(1, newDesription);
-            statement.setInt(2, taskId);
-            int rowsUpdated = statement.executeUpdate();
-            if (rowsUpdated > 0) {
-                System.out.println("Task description updated successfully!");
-            } else {
-                System.out.println("No description was updated.");
-            }
-        } catch (SQLException e) {
-            System.err.println("Error updating task description: " + e.getMessage());
         }
     }
 
@@ -393,25 +341,6 @@ public class Database {
             System.err.println("Error retrieving data: " + e.getMessage());
         }
         return tasks;
-    }
-
-    public static boolean isEmployee(String username) {
-        String sql = "SELECT * FROM user WHERE username = ? AND role IN ('Employee', 'Manager')";
-
-        try (
-                Connection connection = DriverManager.getConnection(url);
-                PreparedStatement statement = connection.prepareStatement(sql);) {
-            statement.setString(1, username);
-
-            try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
-                    return true;
-                }
-            }
-        } catch (SQLException e) {
-            System.err.println("Error retrieving data: " + e.getMessage());
-        }
-        return false;
     }
 
     public static boolean deleteTask(int taskId) {
