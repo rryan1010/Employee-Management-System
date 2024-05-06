@@ -255,8 +255,14 @@ public class HRGUI extends JFrame {
 
     private void refreshTaskTable() {
         Object[][] data = Database.getAllTasks();
-        DefaultTableModel model = new DefaultTableModel(data,
-                new String[] { "Task ID", "Title", "Description", "Status", "Assigned To", "Manager" });
+        String[] columnNames = { "Task ID", "Title", "Description", "Status", "Assigned To", "Manager" };
+        DefaultTableModel model = new DefaultTableModel(data, columnNames) {
+            // make cells uneditable
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         tasksTable.setModel(model);
         tasksTable.revalidate();
     }
@@ -266,7 +272,13 @@ public class HRGUI extends JFrame {
         Object[][] data = Database.getAllEmployees(); // You need to implement this method in the Database class
         String[] columnNames = { "Username", "First Name", "Last Name", "Email", "Role", "Department", "Job Title" };
         // Create a new table model with the fetched data
-        DefaultTableModel model = new DefaultTableModel(data, columnNames);
+        DefaultTableModel model = new DefaultTableModel(data, columnNames) {
+            // make cells uneditable
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         employeesTable.setModel(model);
         employeesTable.revalidate();
     }
