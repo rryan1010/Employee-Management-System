@@ -17,7 +17,7 @@ public class HRGUI extends JFrame {
     private JLabel nameLabel, roleLabel, departmentLabel, jobTitleLabel;
 
     // Task Creation Components
-    private JTextField titleField, descriptionField, statusField, feedbackField;
+    private JTextArea titleField, descriptionField, feedbackField;
     private JComboBox<String> assignedToDropdown, managerDropdown;
     private JButton createTaskButton;
 
@@ -95,10 +95,9 @@ public class HRGUI extends JFrame {
         taskCreationPanel.setLayout(new GridLayout(0, 2, 5, 5));
         taskCreationPanel.setBorder(BorderFactory.createTitledBorder("Create Task"));
 
-        titleField = new JTextField(20);
-        descriptionField = new JTextField(20);
-        statusField = new JTextField(20);
-        feedbackField = new JTextField(20);
+        titleField = new JTextArea(2, 20);
+        descriptionField = new JTextArea(2, 20);
+        feedbackField = new JTextArea(2, 20);
         createTaskButton = new JButton("Create Task");
         createTaskButton.addActionListener(this::createTask);
 
