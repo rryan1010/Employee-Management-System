@@ -26,7 +26,7 @@ public class HRGUI extends JFrame {
     private JButton deleteEmployeeButton, editEmployeeButton;
 
     // Task List Components
-    private JTable tasksTable;
+    private JTable tasksTable, employeesTable;
     private JScrollPane scrollPane;
 
     public HRGUI(User user) {
@@ -37,10 +37,15 @@ public class HRGUI extends JFrame {
         setLocationRelativeTo(null);
 
         mainPanel = new JPanel(new BorderLayout(10, 10));
+
         setupProfilePanel();
-        setupTaskCreationPanel();
         setupEmployeeActionPanel();
+        setupTaskCreationPanel();
+
+        populateUserDropdowns();
+        
         setupTaskListPanel();
+        setupEmployeeTable();
 
         getContentPane().add(mainPanel);
         setVisible(true);
@@ -61,7 +66,7 @@ public class HRGUI extends JFrame {
         profilePanel.add(departmentLabel);
         profilePanel.add(jobTitleLabel);
 
-        JButton goBackButton = new JButton("Go Back");
+        JButton goBackButton = new JButton("Log Out");
         goBackButton.addActionListener(e -> {
             dispose();
             new LoginGUI();
@@ -87,8 +92,6 @@ public class HRGUI extends JFrame {
         assignedToDropdown = new JComboBox<>();
         managerDropdown = new JComboBox<>();
 
-        populateUserDropdowns();
-
         taskCreationPanel.add(new JLabel("Title:"));
         taskCreationPanel.add(titleField);
         taskCreationPanel.add(new JLabel("Description:"));
@@ -111,12 +114,14 @@ public class HRGUI extends JFrame {
         employeeActionPanel.setBorder(BorderFactory.createTitledBorder("Employee Actions"));
 
         usernameDropdown = new JComboBox<>();
+
         deleteEmployeeButton = new JButton("Delete Employee");
+        deleteEmployeeButton.addActionListener(this::deleteEmployee);
+
         editEmployeeButton = new JButton("Edit Employee Details");
+        editEmployeeButton.addActionListener(this::editEmployeeDetails);
 
-        populateUserDropdowns();
-
-        employeeActionPanel.add(new JLabel("Username:"));
+        employeeActionPanel.add(new JLabel("Select Employee's Username:"));
         employeeActionPanel.add(usernameDropdown);
         employeeActionPanel.add(deleteEmployeeButton);
         employeeActionPanel.add(editEmployeeButton);
@@ -132,13 +137,19 @@ public class HRGUI extends JFrame {
         mainPanel.add(scrollPane, BorderLayout.CENTER);
     }
 
-    private void populateUserDropdowns() {
-        List<String> usernames = Database.getEmployeeUsernames(); // Implement this method in Database
-        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(usernames.toArray(new String[0]));
-        assignedToDropdown.setModel(model);
-        managerDropdown.setModel(model);
-        usernameDropdown.setModel(model);
+    private void setupEmployeeTable() {
+        String[] columnNames = {"Username", "First Name", "Last Name", "Email", "Role", "Department", "Job Title"};  // These are the column headers
+        Object[][] data = {};  // Initial empty data
+    
+        // Initialize the table with data and column names
+        employeesTable = new JTable(new DefaultTableModel(data, columnNames));
+        JScrollPane scrollPane = new JScrollPane(employeesTable);  // Enable scrolling
+        employeesTable.setFillsViewportHeight(true);
+    
+        // You can add the scrollPane to a panel or directly to the mainPanel, depending on your layout
+        mainPanel.add(scrollPane, BorderLayout.EAST);  // Adjust layout as necessary
     }
+    
 
     private void createTask(ActionEvent e) {
         if (titleField.getText().isEmpty() ||
@@ -166,12 +177,74 @@ public class HRGUI extends JFrame {
         }
     }
 
+    private void deleteEmployee(ActionEvent e) {
+        String username = (String) usernameDropdown.getSelectedItem();
+        if (username != null && Database.deleteUser(username)) {
+            JOptionPane.showMessageDialog(this, "Employee deleted successfully!");
+            refreshEmployeeTable(); // Refresh the display table or list of employees
+        } else {
+            JOptionPane.showMessageDialog(this, "Failed to delete employee.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    
+    private void editEmployeeDetails(ActionEvent e) {
+        String username = (String) usernameDropdown.getSelectedItem();
+        if (username != null) {
+            User user = Database.getUserHR(username); // Assuming getUser method fetches the user details
+            if (user != null) {
+                // Logic to open a dialog or another panel for editing
+                // For simplicity, assume we're using a JOptionPane for input
+                String newRole = JOptionPane.showInputDialog("Enter new role for " + username);
+                if (newRole != null && !newRole.isEmpty()) {
+                    boolean success = Database.updateEmployee(
+                        username, user.getFirstName(), user.getLastName(), newRole,
+                        user.getDepartment(), user.getJobTitle(), user.getEmail()
+                    );
+                    if (success) {
+                        JOptionPane.showMessageDialog(this, "Employee details updated successfully.");
+                        refreshEmployeeTable();
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Failed to update employee details.", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "User not found.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+    
+
+    private void populateUserDropdowns() {
+        List<String> usernames = Database.getEmployeeUsernames(); // Implement this method in Database
+        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(usernames.toArray(new String[0]));
+        assignedToDropdown.setModel(model);
+        managerDropdown.setModel(model);
+        usernameDropdown.setModel(model);
+    }
+
     private void refreshTaskTable() {
         Object[][] data = Database.getAllTasks();
         DefaultTableModel model = new DefaultTableModel(data,
                 new String[] { "Task ID", "Title", "Description", "Status", "Assigned To", "Manager" });
         tasksTable.setModel(model);
     }
+
+    private void refreshEmployeeTable() {
+        // Fetch the latest employee data from the database
+        Object[][] data = Database.getAllEmployees(); // You need to implement this method in the Database class
+        String[] columnNames = {"Username", "First Name", "Last Name", "Email", "Role", "Department", "Job Title"}; // Adjust column names as needed
+    
+        // Create a new table model with the fetched data
+        DefaultTableModel model = new DefaultTableModel(data, columnNames);
+    
+        // Update the table model
+        employeesTable.setModel(model);
+    
+        // Optional: refresh the UI to display changes
+        employeesTable.revalidate();
+        employeesTable.repaint();
+    }
+    
 
     public static void main(String[] args) {
         User user = new User("Taiwo Oso", "password", "Manager", "Taiwo", "Oso", "CS Department", "Software Engineer",

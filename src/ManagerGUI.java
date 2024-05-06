@@ -66,7 +66,7 @@ public class ManagerGUI extends JFrame {
         profilePanel.add(new JLabel("Role: " + user.getRole()));
         profilePanel.add(new JLabel("Job Title: " + user.getJobTitle()));
 
-        JButton goBackButton = new JButton("Go Back");
+        JButton goBackButton = new JButton("Log Out");
         goBackButton.addActionListener(e -> {
             dispose();
             new LoginGUI();
@@ -163,22 +163,21 @@ public class ManagerGUI extends JFrame {
     }
 
     private void editTask(Task task) {
-        
+        new EditTaskGUI(task);
     }
-
     // private boolean assignTask(Task task, String username) {
-    //     if (username.isBlank()) {
-    //         JOptionPane.showMessageDialog(this, "Employee cannot be empty!");
-    //         return false;
-    //     }
+    // if (username.isBlank()) {
+    // JOptionPane.showMessageDialog(this, "Employee cannot be empty!");
+    // return false;
+    // }
 
-    //     if (Database.isEmployee(username)) {
-    //         Database.updateT(task.getTitle(), task.getDescription(), task.getStatus(),
-    //                 username, user.getUsername(), "");
-    //         return true;
-    //     }
+    // if (Database.isEmployee(username)) {
+    // Database.updateT(task.getTitle(), task.getDescription(), task.getStatus(),
+    // username, user.getUsername(), "");
+    // return true;
+    // }
 
-    //     JOptionPane.showMessageDialog(this, "Employee does not exist!");
-    //     return false;
+    // JOptionPane.showMessageDialog(this, "Employee does not exist!");
+    // return false;
     // }
 }
