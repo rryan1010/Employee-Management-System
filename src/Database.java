@@ -408,11 +408,7 @@ public class Database {
 
     public static Object[][] getAllEmployees() {
         List<Object[]> list = new ArrayList<>();
-        String sql = "SELECT username, first_name, last_name, email, role, department, job_title FROM user WHERE role != 'HR'"; // Exclude
-                                                                                                                                // HR
-                                                                                                                                // from
-                                                                                                                                // the
-                                                                                                                                // list
+        String sql = "SELECT username, first_name, last_name, email, role, department, job_title FROM user WHERE role != 'HR'"; // Exclude HR from the list
 
         try (Connection connection = DriverManager.getConnection(url);
                 PreparedStatement statement = connection.prepareStatement(sql);
