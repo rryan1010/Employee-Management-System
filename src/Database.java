@@ -252,6 +252,31 @@ public class Database {
         }
     }
 
+    public static boolean updateTask(Task task) {
+        String sql = "UPDATE task SET title = ?, description = ?, status = ?, assigned_to = ?, manager = ?, feedback = ? WHERE task_id = ?";
+
+        try (Connection connection = DriverManager.getConnection(url);
+                PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, task.getTitle());
+            statement.setString(2, task.getDescription());
+            statement.setString(3, task.getStatus());
+            statement.setString(4, task.getAssignedTo());
+            statement.setString(5, task.getManager());
+            statement.setString(6, task.getFeedback());
+            statement.setInt(7, task.getTaskId());
+            int rowsUpdated = statement.executeUpdate();
+            if (rowsUpdated == 0) {
+                System.out.println("Updating task failed, no rows affected.");
+                return false;
+            }
+            System.out.println("Task updated successfully.");
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Error updating task: " + e.getMessage());
+            return false;
+        }
+    }
+
     // Method to update feedback for a task
     public static void updateTaskFeedback(int taskId, String newFeedback) {
         String sql = "UPDATE task SET feedback = ? WHERE task_id = ?";
