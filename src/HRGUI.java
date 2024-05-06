@@ -124,15 +124,6 @@ public class HRGUI extends JFrame {
 
         profilePanel.add(taskCreationPanel);
     }
-    /*
-     * 
-     * User/task table - jlabels
-     * 
-     * create task - jtextarea for title, description, and feedback
-     * 
-     * Add promote/demote in employee actions
-     * 
-     */
 
     private void setupEmployeeActionPanel() {
         employeeActionPanel = new JPanel(new GridBagLayout());
