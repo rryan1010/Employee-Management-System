@@ -5,7 +5,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class EditTaskGUI extends JFrame {
+public class EditTaskGUI extends JDialog {
     private Task task;
     private JTextField titleField;
     private JTextArea descriptionArea;
@@ -13,7 +13,12 @@ public class EditTaskGUI extends JFrame {
     private JButton saveButton;
     private JButton cancelButton;
 
-    public EditTaskGUI(Task task) {
+    public EditTaskGUI(JFrame parent, String title, boolean modal, Task task) {
+        super(parent, title, modal);
+        createGUI(task);
+    }
+
+    private void createGUI(Task task) {
         this.task = task;
 
         setTitle("Edit Task");
@@ -24,7 +29,7 @@ public class EditTaskGUI extends JFrame {
         add(initFields(), BorderLayout.CENTER);
         add(initButtons(), BorderLayout.SOUTH);
 
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         setVisible(true);
     }
 

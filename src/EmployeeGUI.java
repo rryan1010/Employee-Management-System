@@ -170,6 +170,18 @@ public class EmployeeGUI extends JFrame {
     }
 
     private void editTask(Task task) {
-        new EditTaskGUI(task);
+        new EditTaskGUI(this, "Edit Task", true, task);
+        managerTasksPanel.removeAll();
+        reloadManagerTasks();
+        managerTasksPanel.revalidate();
+        managerTasksPanel.repaint();
+    }
+
+    private void reloadManagerTasks() {
+        List<Task> tasks = Database.getManagerTasks(user.getUsername());
+
+        for (Task task : tasks) {
+            addTaskToPanel(task, managerTasksPanel, false);
+        }
     }
 }
