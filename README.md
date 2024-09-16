@@ -10,7 +10,7 @@ The **Employee Management System (EMS)** streamlines task management and adminis
   
 - **Taiwo Oso** - Developer  
 
-- **Ryan Park - Developer  
+- **Ryan Park** - Developer  
   
 ## Core Features
 
